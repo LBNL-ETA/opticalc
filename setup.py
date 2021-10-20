@@ -1,16 +1,8 @@
-import os
-import re
-import sys
-import platform
-import subprocess
-
-from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
+from setuptools import setup, find_packages
 
 setup(
     name='opticalc',
-    version='0.0.1',
+    version='0.0.2',
     long_description='',
     # tell setuptools to look for any packages under 'src'
     packages=find_packages(where='src'),

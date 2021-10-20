@@ -4,7 +4,7 @@ from opticalc.product import Product
 from opticalc.integrated import generate_integrated_spectral_averages_summary
 from py_igsdb_optical_data.standard import CalculationStandardName
 import pywincalc
-from py_igsdb_optical_data.optical import IntegratedSpectralAveragesSummary
+from py_igsdb_optical_data.optical import IntegratedSpectralAveragesSummaryValues
 import os
 from math import isclose
 
@@ -25,7 +25,7 @@ def test_generate_integrated_spectral_averages_summary():
 
     product = Product(**sample_monolithic_json)
     
-    values: IntegratedSpectralAveragesSummary = generate_integrated_spectral_averages_summary(
+    values: IntegratedSpectralAveragesSummaryValues = generate_integrated_spectral_averages_summary(
         product=product,
         optical_standard=optical_standard)        
     
@@ -52,7 +52,7 @@ def test_calculate_emissivity_from_wavelengths():
 
     product = Product(**sample_json)
     
-    values: IntegratedSpectralAveragesSummary = generate_integrated_spectral_averages_summary(
+    values: IntegratedSpectralAveragesSummaryValues = generate_integrated_spectral_averages_summary(
         product=product,
         optical_standard=optical_standard)        
     assert isclose(values.thermal_ir.absorptance_front_hemispheric, 0.8402627824166977, abs_tol=1e-8)

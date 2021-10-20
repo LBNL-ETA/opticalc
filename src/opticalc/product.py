@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List, Dict
 
-from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummary
+from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
 from pydantic.dataclasses import dataclass
 from opticalc.material import MaterialBulkProperties
 
@@ -91,7 +91,7 @@ class Product:
     nfrc_id: str = None
     composition: list = None
     material_bulk_properties: MaterialBulkProperties = None
-    integrated_spectral_averages_summaries: List[IntegratedSpectralAveragesSummary] = None
+    integrated_spectral_averages_summaries: List[IntegratedSpectralAveragesSummaryValues] = None
     physical_properties: PhysicalProperties = None
     extra_data: dict = None
     created_at: str = None

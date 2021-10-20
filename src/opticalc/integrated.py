@@ -3,7 +3,7 @@ from functools import partial
 import pywincalc
 from opticalc.product import Product, ProductSubtype
 from py_igsdb_optical_data.optical import OpticalStandardMethodResults, OpticalColorResults, \
-    IntegratedSpectralAveragesSummary, OpticalColorFluxResults, OpticalColorResult, RGBResult, \
+    IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, RGBResult, \
     LabResult, TrichromaticResult, ThermalIRResults, OpticalStandardMethodFluxResults
 
 
@@ -313,7 +313,7 @@ def generate_thermal_ir_results(pywincalc_layer, optical_standard, result_setter
 
 def generate_integrated_spectral_averages_summary(product: Product,
                                                   optical_standard: pywincalc.OpticalStandard) \
-        -> IntegratedSpectralAveragesSummary:
+        -> IntegratedSpectralAveragesSummaryValues:
     """
     Generate
     integrated
@@ -332,7 +332,7 @@ def generate_integrated_spectral_averages_summary(product: Product,
     # TODO: Business logic that generates integrated spectral averages summary
     # TODO: for the given product and calculation standard.
 
-    results: IntegratedSpectralAveragesSummary = IntegratedSpectralAveragesSummary()
+    results: IntegratedSpectralAveragesSummaryValues = IntegratedSpectralAveragesSummaryValues()
 
     method_to_result_setter = {
         "SOLAR": partial(setattr, results, "solar"),
