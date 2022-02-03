@@ -315,18 +315,7 @@ def generate_integrated_spectral_averages_summary(product: Product,
                                                   optical_standard: pywincalc.OpticalStandard) \
         -> IntegratedSpectralAveragesSummaryValues:
     """
-    Generate
-    integrated
-    spectral
-    averages
-    summary
-    for a given product and standard.
-
-    :param
-    product:
-    :param
-    standard:
-    :return:
+    Generate integrated spectral averages summary for a given product and standard.
     """
 
     # TODO: Business logic that generates integrated spectral averages summary

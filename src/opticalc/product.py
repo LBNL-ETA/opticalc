@@ -72,7 +72,7 @@ class Product:
     deconstructable: bool = False
     # This product is a 'reference' product, meaning it's sole purpose is
     # to get a child product into the IGSDB using reference substrates.
-    # This is method of submittal is  only valid for APPLIED_FILM and LAMINATE products.
+    # This is method of submittal is only valid for APPLIED_FILM and LAMINATE products.
     reference: bool = False
     igsdb_version: str = None
     coated_side: str = None
