@@ -30,10 +30,6 @@
   "material_bulk_properties": null,
   "physical_properties": {
     "thickness": 4.00000000,
-    "tir_front": 0,
-    "tir_back": 0.0,
-    "emissivity_front": null,
-    "emissivity_back": null,
     "permeability_factor": null,
     "optical_openness": null,
     "bulk_properties_override": {

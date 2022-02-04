@@ -2,8 +2,9 @@ from enum import Enum
 from typing import List, Dict, Optional
 
 from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
-from py_igsdb_optical_data.standard import CalculationStandardMethodTypes, CalculationStandardName
+from py_igsdb_optical_data.standard import CalculationStandardName
 from pydantic.dataclasses import dataclass
+
 from opticalc.material import MaterialBulkProperties
 
 
@@ -49,10 +50,6 @@ class ProductSubtype(Enum):
 @dataclass
 class PhysicalProperties:
     thickness: float = None
-    tir_front: float = None
-    tir_back: float = 0.0
-    emissivity_front: float = None
-    emissivity_back: float = None
     permeability_factor: float = None
     optical_openness: float = None
     bulk_properties_override: dict = None
