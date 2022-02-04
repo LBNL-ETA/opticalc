@@ -70,11 +70,25 @@ def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
     :return:
     Instance of pywincalc.ProductDataOpticalAndThermal
     """
-    wavelength_data = convert_wavelength_data(
-        product.physical_properties.optical_properties.optical_data["angle_blocks"][0]["wavelength_data"])
+
+    optical_data = product.physical_properties.optical_properties.optical_data
+    if not optical_data:
+        raise Exception(f"No optical_data is defined on product: {product}")
+
+    try:
+        wavelength_data = optical_data["angle_blocks"][0]["wavelength_data"]
+        if not wavelength_data:
+            raise Exception("No wavelength data")
+    except Exception as e:
+        raise Exception("Could not find wavelength data in product : {product}") from e
+
+    wavelength_data = convert_wavelength_data(wavelength_data)
     material_type = convert_subtype(product.subtype)
     material_thickness = product.physical_properties.thickness
 
+    # We use the top-level properties on 'product' to get emissivity and TIR.
+    # These property methods will return a predefined value if one exists,
+    # otherwise will return a calculated value if one exists.
     emissivity_front = product.emissivity_front
     emissivity_back = product.emissivity_back
     ir_transmittance_front = product.tir_front
