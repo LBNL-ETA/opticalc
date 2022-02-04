@@ -5,7 +5,8 @@ import pywincalc
 from opticalc.product import Product, ProductSubtype
 from py_igsdb_optical_data.optical import OpticalStandardMethodResults, OpticalColorResults, \
     IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, RGBResult, \
-    LabResult, TrichromaticResult, ThermalIRResults, OpticalStandardMethodFluxResults
+    LabResult, TrichromaticResult, ThermalIRResults, OpticalStandardMethodFluxResults, \
+    IntegratedSpectralAveragesSummaryValuesFactory
 
 logger = logging.getLogger(__name__)
 
@@ -332,7 +333,7 @@ def generate_integrated_spectral_averages_summary(product: Product,
     # TODO: Business logic that generates integrated spectral averages summary
     # TODO: for the given product and calculation standard.
 
-    results: IntegratedSpectralAveragesSummaryValues = IntegratedSpectralAveragesSummaryValues()
+    results: IntegratedSpectralAveragesSummaryValues = IntegratedSpectralAveragesSummaryValuesFactory.create()
 
     method_to_result_setter = {
         "SOLAR": partial(setattr, results, "solar"),
