@@ -10,7 +10,7 @@ setup(
     # and nowhere else
     package_dir={'': 'src'},
     install_requires=['pydantic>=1.8.2',
-                      'py_igsdb_optical_data @ git+https://github.com/LBNL-ETA/py_igsdb_optical_data',
+                      'py_igsdb_optical_data @ git+https://github.com/LBNL-ETA/py_igsdb_optical_data@main',
                       'pywincalc @ git+https://github.com/LBNL-ETA/pywincalc@develop'],
     test_suite='tests',
     zip_safe=False,
