@@ -1,12 +1,12 @@
 import json
-
-from opticalc.product import Product
-from opticalc.integrated import generate_integrated_spectral_averages_summary
-from py_igsdb_optical_data.standard import CalculationStandardName
-import pywincalc
-from py_igsdb_optical_data.optical import IntegratedSpectralAveragesSummaryValues
 import os
 from math import isclose
+
+import pywincalc
+from py_igsdb_optical_data.optical import IntegratedSpectralAveragesSummaryValues
+
+from opticalc.integrated import generate_integrated_spectral_averages_summary
+from opticalc.product import Product
 
 OPTICAL_STANDARD_PATH_NFRC = os.path.join(os.path.dirname(__file__), "./standards/W5_NFRC_2003.std")
 

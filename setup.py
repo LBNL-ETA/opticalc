@@ -9,7 +9,7 @@ setup(
     # tell setuptools that all packages will be under the 'src' directory
     # and nowhere else
     package_dir={'': 'src'},
-    install_requires=['pydantic>=1.8.2',
+    install_requires=['pydantic>=1.9.0',
                       'py_igsdb_optical_data @ git+https://github.com/LBNL-ETA/py_igsdb_optical_data@main',
                       'pywincalc @ git+https://github.com/LBNL-ETA/pywincalc@develop'],
     test_suite='tests',
