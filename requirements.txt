@@ -1,1 +1,3 @@
 .
+
+-e git+https://github.com/LBNL-ETA/py_igsdb_optical_data@main#egg=py_igsdb_optical_data

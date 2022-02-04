@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
+from py_igsdb_optical_data.standard import CalculationStandardMethodTypes, CalculationStandardName
 from pydantic.dataclasses import dataclass
 from opticalc.material import MaterialBulkProperties
 
@@ -96,3 +97,81 @@ class Product:
     extra_data: dict = None
     created_at: str = None
     updated_at: str = None
+
+    @property
+    def emissivity_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+        """
+        Emissivity (front) is defined in IntegratedSpectralAveragesSummaryValues summary objects
+        contained in the integrated_spectral_averages_summaries List.
+
+        This property will return a 'predefined' value if one was defined by the user
+        in the header of the original submission file.
+
+        Otherwise, it returns the calculated value from WinCalc, if available.
+
+        :param calculation_standard_name:
+        """
+
+        for summary_values in self.integrated_spectral_averages_summaries:
+            if summary_values.standard == calculation_standard_name:
+                return summary_values.thermal_ir.emissivity_front_hemispheric
+        return None
+
+    @property
+    def emissivity_back(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+        """
+        Emissivity (back) is defined in IntegratedSpectralAveragesSummaryValues summary objects
+        contained in the integrated_spectral_averages_summaries List.
+
+        This property will return a 'predefined' value if one was defined by the user
+        in the header of the original submission file.
+
+        Otherwise, it returns the calculated value from WinCalc, if available.
+
+        :param calculation_standard_name:
+        """
+
+        for summary_values in self.integrated_spectral_averages_summaries:
+            if summary_values.standard == calculation_standard_name:
+                return summary_values.thermal_ir.emissivity_back_hemispheric
+        return None
+
+    @property
+    def tir_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+        """
+        TIR (front) is defined in IntegratedSpectralAveragesSummaryValues summary objects
+        contained in the integrated_spectral_averages_summaries List.
+
+        This property will return a 'predefined' value if one was defined by the user
+        in the header of the original submission file.
+
+        Otherwise, it returns the calculated value from WinCalc, if available.
+
+        :param calculation_standard_name:
+
+        """
+
+        for summary_values in self.integrated_spectral_averages_summaries:
+            if summary_values.standard == calculation_standard_name:
+                return summary_values.thermal_ir.transmittance_front
+        return None
+
+    @property
+    def tir_back(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+        """
+        TIR (back) is defined in IntegratedSpectralAveragesSummaryValues summary objects
+        contained in the integrated_spectral_averages_summaries List.
+
+        This property will return a 'predefined' value if one was defined by the user
+        in the header of the original submission file.
+
+        Otherwise, it returns the calculated value from WinCalc, if available.
+
+        :param calculation_standard_name:
+
+        """
+
+        for summary_values in self.integrated_spectral_averages_summaries:
+            if summary_values.standard == calculation_standard_name:
+                return summary_values.thermal_ir.transmittance_back
+        return None

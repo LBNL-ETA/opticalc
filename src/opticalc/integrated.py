@@ -60,15 +60,26 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
         raise RuntimeError(f"Unsupported coated side: {coated_side}")
 
 
-def convert_product(product):
+def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
+    """
+    Converts a product.Product dataclass instance into a
+    dataclass instance that PyWinCalc can work with.
+
+    :param product:     Instance of a populated product.Product dataclass
+
+    :return:
+    Instance of pywincalc.ProductDataOpticalAndThermal
+    """
     wavelength_data = convert_wavelength_data(
         product.physical_properties.optical_properties.optical_data["angle_blocks"][0]["wavelength_data"])
     material_type = convert_subtype(product.subtype)
     material_thickness = product.physical_properties.thickness
-    emissivity_front = product.physical_properties.emissivity_front
-    emissivity_back = product.physical_properties.emissivity_back
-    ir_transmittance_front = product.physical_properties.tir_front
-    ir_transmittance_back = product.physical_properties.tir_back
+
+    emissivity_front = product.emissivity_front
+    emissivity_back = product.emissivity_back
+    ir_transmittance_front = product.tir_front
+    ir_transmittance_back = product.tir_back
+
     coated_side = convert_coated_side(product.coated_side)
 
     optical_data = pywincalc.ProductDataOpticalNBand(material_type, material_thickness, wavelength_data, coated_side,
