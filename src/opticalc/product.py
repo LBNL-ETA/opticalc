@@ -123,9 +123,10 @@ class Product:
         if self.physical_properties.predefined_emissivity_front:
             return self.physical_properties.predefined_emissivity_front
 
-        for summary_values in self.integrated_spectral_averages_summaries:
-            if summary_values.standard == calculation_standard_name:
-                return summary_values.thermal_ir.emissivity_front_hemispheric
+        if self.integrated_spectral_averages_summaries:
+            for summary_values in self.integrated_spectral_averages_summaries:
+                if summary_values.standard == calculation_standard_name:
+                    return summary_values.thermal_ir.emissivity_front_hemispheric
         return None
 
     @property
@@ -145,9 +146,10 @@ class Product:
         if self.physical_properties.predefined_emissivity_back:
             return self.physical_properties.predefined_emissivity_back
 
-        for summary_values in self.integrated_spectral_averages_summaries:
-            if summary_values.standard == calculation_standard_name:
-                return summary_values.thermal_ir.emissivity_back_hemispheric
+        if self.integrated_spectral_averages_summaries:
+            for summary_values in self.integrated_spectral_averages_summaries:
+                if summary_values.standard == calculation_standard_name:
+                    return summary_values.thermal_ir.emissivity_back_hemispheric
         return None
 
     @property
@@ -168,9 +170,10 @@ class Product:
         if self.physical_properties.predefined_tir_front:
             return self.physical_properties.predefined_tir_front
 
-        for summary_values in self.integrated_spectral_averages_summaries:
-            if summary_values.standard == calculation_standard_name:
-                return summary_values.thermal_ir.transmittance_front
+        if self.integrated_spectral_averages_summaries:
+            for summary_values in self.integrated_spectral_averages_summaries:
+                if summary_values.standard == calculation_standard_name:
+                    return summary_values.thermal_ir.transmittance_front
         return None
 
     @property
@@ -190,7 +193,8 @@ class Product:
         if self.tir_back:
             return self.tir_back
 
-        for summary_values in self.integrated_spectral_averages_summaries:
-            if summary_values.standard == calculation_standard_name:
-                return summary_values.thermal_ir.transmittance_back
+        if self.integrated_spectral_averages_summaries:
+            for summary_values in self.integrated_spectral_averages_summaries:
+                if summary_values.standard == calculation_standard_name:
+                    return summary_values.thermal_ir.transmittance_back
         return None
