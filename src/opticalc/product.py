@@ -190,8 +190,8 @@ class Product:
         :param calculation_standard_name:
 
         """
-        if self.tir_back:
-            return self.tir_back
+        if self.physical_properties.predefined_tir_back:
+            return self.physical_properties.predefined_tir_back
 
         if self.integrated_spectral_averages_summaries:
             for summary_values in self.integrated_spectral_averages_summaries:
