@@ -120,7 +120,7 @@ class Product:
         :param calculation_standard_name:
         """
 
-        if self.physical_properties.predefined_emissivity_front:
+        if self.physical_properties.predefined_emissivity_front is not None: # We want '0' to be handled here
             return self.physical_properties.predefined_emissivity_front
 
         if self.integrated_spectral_averages_summaries:
@@ -143,7 +143,7 @@ class Product:
         :param calculation_standard_name:
         """
 
-        if self.physical_properties.predefined_emissivity_back:
+        if self.physical_properties.predefined_emissivity_back is not None: # We want '0' to be handled here
             return self.physical_properties.predefined_emissivity_back
 
         if self.integrated_spectral_averages_summaries:
@@ -167,7 +167,7 @@ class Product:
 
         """
 
-        if self.physical_properties.predefined_tir_front:
+        if self.physical_properties.predefined_tir_front is not None: # We want '0' to be handled here
             return self.physical_properties.predefined_tir_front
 
         if self.integrated_spectral_averages_summaries:
@@ -190,7 +190,7 @@ class Product:
         :param calculation_standard_name:
 
         """
-        if self.physical_properties.predefined_tir_back:
+        if self.physical_properties.predefined_tir_back is not None: # We want '0' to be handled here
             return self.physical_properties.predefined_tir_back
 
         if self.integrated_spectral_averages_summaries:
