@@ -22,29 +22,53 @@ class ProductType(Enum):
 
 
 class ProductSubtype(Enum):
-    # glazing types
-    MONOLITHIC = "MONOLITHIC"
-    LAMINATE = "LAMINATE"
-    INTERLAYER = "INTERLAYER"
-    EMBEDDED_COATING = "EMBEDDED_COATING"
-    COATED = "COATED"
-    COATING = "COATING"
-    APPLIED_FILM = "APPLIED_FILM"
-    FILM = "FILM"
-    FRITTED_GLASS = "FRITTED_GLASS"
-    CHROMOGENIC = "CHROMOGENIC"
 
-    # shading and material types
-    VENETIAN_BLIND = "VENETIAN_BLIND"
-    DIFFUSING_SHADE = "DIFFUSING_SHADE"
-    WOVEN_SHADE = "WOVEN_SHADE"
-    VERTICAL_LOUVER = "VERTICAL_LOUVER"
-    PERFORATED_SCREEN = "PERFORATED_SCREEN"
-    CELLULAR_SHADE = "CELLULAR_SHADE"
+    # GLAZING Subtypes
+    # ----------------------------------------
+    MONOLITHIC = "Monolithic"
+    LAMINATE = "Laminate"
+    INTERLAYER = "Interlayer"
+    EMBEDDED_COATING = "Embedded coating"
+    COATED = "Coated glass"
+    COATING = "Coating"
+    APPLIED_FILM = "Applied film"
+    FILM = "Film"
+
+    # HYBRID GLAZING / SHADING Subtypes
+    # ----------------------------------------
+    FRITTED_GLASS = "Fritted glass"
+    SANDBLASTED_GLASS = "Sandblasted glass"
+    ACID_ETCHED_GLASS = "Acid etched glass"
+    CHROMOGENIC = "Chromogenic"
+
+    # SHADING Subtypes
+    # ----------------------------------------
+
+    # These have a geometry (GeometricProperties object)
+    # associated with them:
+    VENETIAN_BLIND = "Venetian blind"
+    VERTICAL_LOUVER = "Vertical louver"
+    PERFORATED_SCREEN = "Perforated screen"
+    WOVEN_SHADE = "Woven shade"
+
+    # These must have a BSDF associated:
+    ROLLER_SHADE = "Roller shade"
+
+    # These must have a GEN_BSDF file attached
+    # (and may have a THMX -- a precursor to GEN_BSDF -- file attached):
+    CELLULAR_SHADE = "Cellular shade"
+    PLEATED_SHADE = "Pleated Shade"
+    ROMAN_SHADE = "Roman shade"
+
+    # TODO: What qualities do these have?
+    DIFFUSING_SHADE = "Diffusing shade"
+    SOLAR_SCREEN = "Solar screen"
+
+    # Shading materials:
+    SHADE_MATERIAL = "Shade material"
 
     # other
-    OTHER = "OTHER"
-    UNKNOWN = "UNKNOWN"
+    UNKNOWN = "Unknown"
 
 
 @dataclass
