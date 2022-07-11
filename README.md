@@ -11,7 +11,7 @@ as well as add some helpful dataclasses and Enums to describe the type of data n
 integrated spectral averages summaries. Opticalc also relies on foundational dataclasses defined in `py_igsdb_optical_data`
 library.
 
-![Image of the relationship betweeo Optical and related python libraries](resources/library-structure.png)
+![Image of the relationship betweeo Optical and related python libraries](resources/related-libraries.png)
 
 Why not include this logic directly in Pywincalc? Pywincalc is generated programmatically from wincalc and does 
 not have much in the way of custom, Python-based logic and classes that help a user make sense of the types and shapes
