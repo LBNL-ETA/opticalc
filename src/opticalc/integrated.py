@@ -1,16 +1,23 @@
-from functools import partial
-
 import logging
-import pywincalc
-from py_igsdb_optical_data.standard import CalculationStandardMethodTypes
 
-from opticalc.product import Product, ProductSubtype
+import pywincalc
 from py_igsdb_optical_data.optical import OpticalStandardMethodResults, OpticalColorResults, \
     IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, RGBResult, \
     LabResult, TrichromaticResult, ThermalIRResults, OpticalStandardMethodFluxResults, \
     IntegratedSpectralAveragesSummaryValuesFactory
+from py_igsdb_optical_data.standard import CalculationStandardMethodTypes
+
+from opticalc.product import Product, ProductSubtype
 
 logger = logging.getLogger(__name__)
+
+
+class SpectralAveragesSummaryCalculationException(Exception):
+    """
+    Capture info about which part of integrated spectral averages
+    summary calculation process went bad.
+    """
+    pass
 
 
 def convert_wavelength_data(raw_wavelength_data):
@@ -141,7 +148,6 @@ def calc_optical(glazing_system, method) -> OpticalStandardMethodResults:
         translated_results.absorptance_back_direct = results.layer_results[0].back.absorptance.direct
         translated_results.absorptance_front_hemispheric = results.layer_results[0].front.absorptance.diffuse
         translated_results.absorptance_back_hemispheric = results.layer_results[0].back.absorptance.diffuse
-
 
     except Exception as e:
         translated_results.error = e
@@ -340,14 +346,6 @@ def generate_thermal_ir_results(pywincalc_layer, optical_standard) -> ThermalIRR
     translated_results.absorptance_front_hemispheric = pywincalc_results.emissivity_front_hemispheric
     translated_results.absorptance_back_hemispheric = pywincalc_results.emissivity_back_hemispheric
     return translated_results
-
-
-class SpectralAveragesSummaryCalculationException(Exception):
-    """
-    Capture info about which part of integrated spectral averages
-    calculation process went bad.
-    """
-    pass
 
 
 def generate_integrated_spectral_averages_summary(product: Product,
