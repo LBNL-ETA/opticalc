@@ -93,9 +93,10 @@ class PhysicalProperties:
 @dataclass
 class IntegratedSpectralAveragesSummary:
     """
-    Encapsulates summary values object containing set of integrated summary values.
+    Encapsulates a summary values object containing set of integrated summary values.
     This class exists to include extra fields to qualify that data, e.g. what
-    source was used to generate those values (e.g. pywincalc, legacy cgdb database, etc.)
+    calculation standard and source was used to generate those values
+    (e.g. pywincalc, legacy cgdb database, etc.)
     """
     summary_values: Optional[IntegratedSpectralAveragesSummaryValues] = None
     calculation_standard: Optional[str] = None
