@@ -108,11 +108,11 @@ class IntegratedSpectralAveragesSummary:
 
 @dataclass
 class Product:
-    type: ProductType
-    subtype: ProductSubtype
+    _type: str
+    _subtype: str
     product_id: int = None
     token: str = None
-    token_type: TokenType = None
+    _token_type: str = None  # Should be string from TokenType enum
     data_file_name: str = None
     data_file_type: str = None
     # This product can be decomposed into parts
@@ -143,6 +143,36 @@ class Product:
     extra_data: dict = None
     created_at: str = None
     updated_at: str = None
+
+    @property
+    def type(self) -> str:
+        return self._type
+
+    @type.setter
+    def type(self, v: str) -> None:
+        if v not in ProductType:
+            raise ValueError(f"Invalid product type: {v}")
+        self._type = v
+
+    @property
+    def subtype(self) -> str:
+        return self._subtype
+
+    @subtype.setter
+    def subtype(self, v: str) -> None:
+        if v not in ProductSubtype:
+            raise ValueError(f"Invalid product subtype: {v}")
+        self._subtype = v
+
+    @property
+    def token_type(self) -> str:
+        return self._token_type
+
+    @token_type.setter
+    def token_type(self, v: str) -> None:
+        if v not in TokenType:
+            raise ValueError(f"Invalid product token type: {v}")
+        self._token_type = v
 
     @property
     def emissivity_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) \
