@@ -1,7 +1,8 @@
 # Opticalc
 
 Opticalc is a Python library used to generate integrated optical summary values for single glazing and shading layers.
-It uses https://github.com/LBNL-ETA/pywincalc to perform these calculations. 
+It uses https://github.com/LBNL-ETA/pywincalc to perform these calculations. Pywincalc is a thin wrapper around the C++
+library https://github.com/LBNL-ETA/wincalc. 
 
 Opticalc attempts to abstract away the peculiarities of pywincalc, 
 as well as add some helpful dataclasses and Enums to describe the type of data needed to calculate 
