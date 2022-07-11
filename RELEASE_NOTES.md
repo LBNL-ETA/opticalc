@@ -7,6 +7,4 @@ Release Notes:
 0.0.6
 - updates integrated summary values models to reflect changes in how Checkertool structures these values. 
 - updates ProductSubtype dataclass to match Checkertool.
-
-0.0.7
 - adds getter/setters and checkes for product type, subtype and token_type.
