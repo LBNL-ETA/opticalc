@@ -4,13 +4,20 @@ Opticalc is a Python library used to generate integrated optical summary values 
 It uses https://github.com/LBNL-ETA/pywincalc to perform these calculations. Pywincalc is a thin wrapper around the C++
 library https://github.com/LBNL-ETA/wincalc. 
 
+Opticalc is used primarily by Checkertool V2. 
+
 Opticalc attempts to abstract away the peculiarities of pywincalc, 
 as well as add some helpful dataclasses and Enums to describe the type of data needed to calculate 
-integrated spectral averages summaries. Opticalc is used primarily by Checkertool V2. 
+integrated spectral averages summaries. Opticalc also relies on foundational dataclasses defined in `py_igsdb_optical_data`
+library.
+
+![Image of the relationship betweeo Optical and related python libraries](resources/library-structure.png)
 
 Why not include this logic directly in Pywincalc? Pywincalc is generated programmatically from wincalc and does 
 not have much in the way of custom, Python-based logic and classes that help a user make sense of the types and shapes
 of data and the nature of various operations. Opticalc serves as a location for this extra Python-based code.
+
+
 
 
 # License
