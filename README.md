@@ -9,8 +9,7 @@ Opticalc is used primarily by Checkertool V2.
 Opticalc attempts to abstract away the peculiarities of pywincalc,
 as well as add some helpful dataclasses and Enums to describe the type of data needed to calculate
 integrated spectral averages summaries. Opticalc also relies on foundational dataclasses defined
-in `py_igsdb_optical_data`
-library.
+in the https://github.com/LBNL-ETA/py_igsdb_optical_data library.
 
 ![Image of the relationship betweeo Optical and related python libraries](resources/related-libraries.png)
 
