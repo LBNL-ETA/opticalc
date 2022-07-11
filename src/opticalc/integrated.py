@@ -37,12 +37,12 @@ def convert_wavelength_data(raw_wavelength_data):
 
 
 def convert_subtype(subtype):
-    subtype_mapping = {ProductSubtype.MONOLITHIC: pywincalc.MaterialType.MONOLITHIC,
-                       ProductSubtype.APPLIED_FILM: pywincalc.MaterialType.APPLIED_FILM,
-                       ProductSubtype.COATED: pywincalc.MaterialType.COATED,
-                       ProductSubtype.LAMINATE: pywincalc.MaterialType.LAMINATE,
-                       ProductSubtype.INTERLAYER: pywincalc.MaterialType.INTERLAYER,
-                       ProductSubtype.FILM: pywincalc.MaterialType.FILM}
+    subtype_mapping = {ProductSubtype.MONOLITHIC.name: pywincalc.MaterialType.MONOLITHIC,
+                       ProductSubtype.APPLIED_FILM.name: pywincalc.MaterialType.APPLIED_FILM,
+                       ProductSubtype.COATED.name: pywincalc.MaterialType.COATED,
+                       ProductSubtype.LAMINATE.name: pywincalc.MaterialType.LAMINATE,
+                       ProductSubtype.INTERLAYER.name: pywincalc.MaterialType.INTERLAYER,
+                       ProductSubtype.FILM.name: pywincalc.MaterialType.FILM}
 
     pywincalc_material = subtype_mapping.get(subtype)
     if pywincalc_material is None:
@@ -360,7 +360,7 @@ def generate_integrated_spectral_averages_summary(product: Product,
     glazing_system = pywincalc.GlazingSystem(optical_standard=optical_standard, solid_layers=[pywincalc_layer])
 
     for method_name in [item.name for item in CalculationStandardMethodTypes]:
-        # Only calculate results for a method if its supported in the current optical standard...
+        # Only calculate results for a method if it's supported in the current optical standard...
         if method_name in optical_standard.methods:
             try:
                 results: OpticalStandardMethodResults = calc_optical(glazing_system, method_name)

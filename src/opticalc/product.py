@@ -1,3 +1,4 @@
+from dataclasses import field
 from enum import Enum
 from typing import List, Dict, Optional
 
@@ -108,11 +109,21 @@ class IntegratedSpectralAveragesSummary:
 
 @dataclass
 class Product:
-    _type: str
-    _subtype: str
+    # How do you get getters and setters in a dataclasses
+    # to validate incoming values and not mess up the
+    # auto-generated init? It's not easy:
+    # https://florimond.dev/en/posts/2018/10/reconciling-dataclasses-and-properties-in-python/
+    # We have to do this:
+    type: str
+    _type: str = field(init=False, repr=False)
+    subtype: str
+    _subtype: str = field(init=False, repr=False)
+
+    token_type: str = None
+    _token_type: str = field(init=False, repr=False)
+
     product_id: int = None
     token: str = None
-    _token_type: str = None  # Should be string from TokenType enum
     data_file_name: str = None
     data_file_type: str = None
     # This product can be decomposed into parts
@@ -150,7 +161,9 @@ class Product:
 
     @type.setter
     def type(self, v: str) -> None:
-        if v not in ProductType:
+        try:
+            ProductType[v]
+        except KeyError:
             raise ValueError(f"Invalid product type: {v}")
         self._type = v
 
@@ -160,17 +173,21 @@ class Product:
 
     @subtype.setter
     def subtype(self, v: str) -> None:
-        if v not in ProductSubtype:
+        try:
+            ProductSubtype[v]
+        except KeyError:
             raise ValueError(f"Invalid product subtype: {v}")
         self._subtype = v
 
     @property
-    def token_type(self) -> str:
+    def token_type(self) -> Optional[str]:
         return self._token_type
 
     @token_type.setter
     def token_type(self, v: str) -> None:
-        if v not in TokenType:
+        try:
+            TokenType[v]
+        except KeyError:
             raise ValueError(f"Invalid product token type: {v}")
         self._token_type = v
 
