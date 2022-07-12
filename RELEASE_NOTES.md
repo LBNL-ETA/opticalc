@@ -9,3 +9,6 @@ Release Notes:
 - Updates ProductSubtype dataclass to match Checkertool.
 - Update Product dataclass to use strings rather than enums, but validate those string values against values defined in enums.
 - Add tests.
+
+0.0.7
+- Update pywincalc dependency
