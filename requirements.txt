@@ -1,6 +1,6 @@
 pydantic==1.9.1
 -e git+https://github.com/LBNL-ETA/py_igsdb_optical_data@main#egg=py_igsdb_optical_data
--e git+https://github.com/LBNL-ETA/pywincalc@v2.4.2#egg=pywincalc
+pywincalc==2.4.3
 
 # Local
 pytest==7.1.2
