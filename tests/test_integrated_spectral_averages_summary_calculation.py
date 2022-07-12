@@ -62,8 +62,3 @@ def test_calculate_emissivity_from_wavelengths():
     assert values.thermal_ir.transmittance_front_diffuse_diffuse == 0
     assert values.thermal_ir.transmittance_back_diffuse_diffuse == 0
     
-
-if __name__ == "__main__":
-    test_generate_integrated_spectral_averages_summary()
-    test_calculate_emissivity_from_wavelengths()
-
