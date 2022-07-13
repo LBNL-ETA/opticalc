@@ -12,3 +12,4 @@ Release Notes:
 
 0.0.7
 - Update pywincalc dependency
+- Use py_igsdb_base_data for product dataclasses
