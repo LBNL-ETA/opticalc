@@ -2,8 +2,8 @@ import json
 import os
 
 import pywincalc
-from py_igsdb_optical_data.optical import OpticalStandardMethodResults
-from py_igsdb_optical_data.standard import CalculationStandardMethodTypes
+from py_igsdb_base_data.optical import OpticalStandardMethodResults
+from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.integrated import calc_optical
 from opticalc.product import Product

@@ -1,11 +1,11 @@
 import logging
 
 import pywincalc
-from py_igsdb_optical_data.optical import OpticalStandardMethodResults, OpticalColorResults, \
+from py_igsdb_base_data.optical import OpticalStandardMethodResults, OpticalColorResults, \
     IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, ThermalIRResults, \
     OpticalStandardMethodFluxResults, \
     IntegratedSpectralAveragesSummaryValuesFactory
-from py_igsdb_optical_data.standard import CalculationStandardMethodTypes
+from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.exceptions import SpectralAveragesSummaryCalculationException
 from opticalc.product import Product

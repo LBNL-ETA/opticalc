@@ -2,7 +2,7 @@ import json
 import os
 
 import pywincalc
-from py_igsdb_optical_data.optical import OpticalColorResults
+from py_igsdb_base_data.optical import OpticalColorResults
 
 from opticalc.integrated import calc_color
 from opticalc.product import Product

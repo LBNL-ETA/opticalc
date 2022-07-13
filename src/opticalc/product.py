@@ -2,8 +2,8 @@ from dataclasses import field
 from enum import Enum
 from typing import List, Dict, Optional
 
-from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
-from py_igsdb_optical_data.standard import CalculationStandardName
+from py_igsdb_base_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
+from py_igsdb_base_data.standard import CalculationStandardName
 from pydantic.dataclasses import dataclass
 
 from opticalc.material import MaterialBulkProperties

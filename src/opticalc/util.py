@@ -1,4 +1,4 @@
-from py_igsdb_optical_data.optical import TrichromaticResult, LabResult, RGBResult
+from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult
 
 from opticalc.product import ProductSubtype
 
