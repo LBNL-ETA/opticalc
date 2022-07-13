@@ -1,8 +1,9 @@
+from dataclasses import field
 from enum import Enum
 from typing import List, Dict, Optional
 
-from py_igsdb_optical_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
-from py_igsdb_optical_data.standard import CalculationStandardName
+from py_igsdb_base_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
+from py_igsdb_base_data.standard import CalculationStandardName
 from pydantic.dataclasses import dataclass
 
 from opticalc.material import MaterialBulkProperties
@@ -22,34 +23,56 @@ class ProductType(Enum):
 
 
 class ProductSubtype(Enum):
-    # glazing types
-    MONOLITHIC = "MONOLITHIC"
-    LAMINATE = "LAMINATE"
-    INTERLAYER = "INTERLAYER"
-    EMBEDDED_COATING = "EMBEDDED_COATING"
-    COATED = "COATED"
-    COATING = "COATING"
-    APPLIED_FILM = "APPLIED_FILM"
-    FILM = "FILM"
-    FRITTED_GLASS = "FRITTED_GLASS"
-    CHROMOGENIC = "CHROMOGENIC"
+    # GLAZING Subtypes
+    # ----------------------------------------
+    MONOLITHIC = "Monolithic"
+    LAMINATE = "Laminate"
+    INTERLAYER = "Interlayer"
+    EMBEDDED_COATING = "Embedded coating"
+    COATED = "Coated glass"
+    COATING = "Coating"
+    APPLIED_FILM = "Applied film"
+    FILM = "Film"
 
-    # shading and material types
-    VENETIAN_BLIND = "VENETIAN_BLIND"
-    DIFFUSING_SHADE = "DIFFUSING_SHADE"
-    WOVEN_SHADE = "WOVEN_SHADE"
-    VERTICAL_LOUVER = "VERTICAL_LOUVER"
-    PERFORATED_SCREEN = "PERFORATED_SCREEN"
-    CELLULAR_SHADE = "CELLULAR_SHADE"
+    # HYBRID GLAZING / SHADING Subtypes
+    # ----------------------------------------
+    FRITTED_GLASS = "Fritted glass"
+    SANDBLASTED_GLASS = "Sandblasted glass"
+    ACID_ETCHED_GLASS = "Acid etched glass"
+    CHROMOGENIC = "Chromogenic"
+
+    # SHADING Subtypes
+    # ----------------------------------------
+
+    # These have a geometry (GeometricProperties object)
+    # associated with them:
+    VENETIAN_BLIND = "Venetian blind"
+    VERTICAL_LOUVER = "Vertical louver"
+    PERFORATED_SCREEN = "Perforated screen"
+    WOVEN_SHADE = "Woven shade"
+
+    # These must have a BSDF associated:
+    ROLLER_SHADE = "Roller shade"
+
+    # These must have a GEN_BSDF file attached
+    # (and may have a THMX -- a precursor to GEN_BSDF -- file attached):
+    CELLULAR_SHADE = "Cellular shade"
+    PLEATED_SHADE = "Pleated Shade"
+    ROMAN_SHADE = "Roman shade"
+
+    # TODO: What qualities do these have?
+    DIFFUSING_SHADE = "Diffusing shade"
+    SOLAR_SCREEN = "Solar screen"
+
+    # Shading materials:
+    SHADE_MATERIAL = "Shade material"
 
     # other
-    OTHER = "OTHER"
-    UNKNOWN = "UNKNOWN"
+    UNKNOWN = "Unknown"
 
 
 @dataclass
 class PhysicalProperties:
-
     # 'predefined' emissivity are values defined by the user
     # in legacy submission file headers
     predefined_emissivity_front: float = None
@@ -69,12 +92,38 @@ class PhysicalProperties:
 
 
 @dataclass
+class IntegratedSpectralAveragesSummary:
+    """
+    Encapsulates a summary values object containing set of integrated summary values.
+    This class exists to include extra fields to qualify that data, e.g. what
+    calculation standard and source was used to generate those values
+    (e.g. pywincalc, legacy cgdb database, etc.)
+    """
+    summary_values: Optional[IntegratedSpectralAveragesSummaryValues] = None
+    calculation_standard: Optional[str] = None
+    source: Optional[str] = None
+    # source_version helps us track changes to standards
+    # if they version over time, e.g. pywincalc versions.
+    source_version: Optional[str] = None
+
+
+@dataclass
 class Product:
-    type: ProductType
-    subtype: ProductSubtype
+    # How do you get getters and setters in a dataclasses
+    # to validate incoming values and not mess up the
+    # auto-generated init? It's not easy:
+    # https://florimond.dev/en/posts/2018/10/reconciling-dataclasses-and-properties-in-python/
+    # We have to do this:
+    type: str
+    _type: str = field(init=False, repr=False)
+    subtype: str
+    _subtype: str = field(init=False, repr=False)
+
+    token_type: str = None
+    _token_type: str = field(init=False, repr=False)
+
     product_id: int = None
     token: str = None
-    token_type: TokenType = None
     data_file_name: str = None
     data_file_type: str = None
     # This product can be decomposed into parts
@@ -100,80 +149,143 @@ class Product:
     nfrc_id: str = None
     composition: list = None
     material_bulk_properties: MaterialBulkProperties = None
-    integrated_spectral_averages_summaries: List[IntegratedSpectralAveragesSummaryValues] = None
+    integrated_spectral_averages_summaries: List[IntegratedSpectralAveragesSummary] = None
     physical_properties: PhysicalProperties = None
     extra_data: dict = None
     created_at: str = None
     updated_at: str = None
 
     @property
-    def emissivity_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+    def type(self) -> str:
+        return self._type
+
+    @type.setter
+    def type(self, v: str) -> None:
+        try:
+            ProductType[v]
+        except KeyError:
+            raise ValueError(f"Invalid product type: {v}")
+        self._type = v
+
+    @property
+    def subtype(self) -> str:
+        return self._subtype
+
+    @subtype.setter
+    def subtype(self, v: str) -> None:
+        try:
+            ProductSubtype[v]
+        except KeyError:
+            raise ValueError(f"Invalid product subtype: {v}")
+        self._subtype = v
+
+    @property
+    def token_type(self) -> Optional[str]:
+        return self._token_type
+
+    @token_type.setter
+    def token_type(self, v: str) -> None:
+        try:
+            TokenType[v]
+        except KeyError:
+            raise ValueError(f"Invalid product token type: {v}")
+        self._token_type = v
+
+    @property
+    def emissivity_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) \
+            -> Optional[float]:
         """
         Emissivity (front) is defined in IntegratedSpectralAveragesSummaryValues summary objects
         contained in the integrated_spectral_averages_summaries List.
 
-        This property will return a 'predefined' value if one was defined by the user
-        in the header of the original submission file.
+        Args:
+            calculation_standard_name:      Calculation standard name to use when searching
+                                            for a spectral averages integrated summary values object
+                                            amongst those generated for this product.
 
-        Otherwise, it returns the calculated value from WinCalc, if available.
 
-        :param calculation_standard_name:
+        Returns:
+            This property will return a 'calculated' value if one was generated by pywincalc.
+            Otherwise, it returns the calculated value from WinCalc, if available.
+            If neither value is available, it returns None.
+
         """
 
-        if self.physical_properties.predefined_emissivity_front is not None: # We want '0' to be handled here
-            return self.physical_properties.predefined_emissivity_front
-
+        # If we have a calculated value for the given standard, return that...
         if self.integrated_spectral_averages_summaries:
-            for summary_values in self.integrated_spectral_averages_summaries:
-                if summary_values.standard == calculation_standard_name:
-                    return summary_values.thermal_ir.emissivity_front_hemispheric
+            for summary in self.integrated_spectral_averages_summaries:
+                if summary.calculation_standard == calculation_standard_name:
+                    value = summary.summary_values.thermal_ir.emissivity_front_hemispheric
+                    if value:
+                        return value
+        # If we don't have a calculated value, we might have a 'user defined' value (from
+        # a header line in submission file). If so, return that...
+        if self.physical_properties and self.physical_properties.predefined_emissivity_front:
+            return self.physical_properties.predefined_emissivity_front
         return None
 
     @property
-    def emissivity_back(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+    def emissivity_back(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) \
+            -> Optional[float]:
         """
-        Emissivity (back) is defined in IntegratedSpectralAveragesSummaryValues summary objects
+        Emissivity (front) is defined in IntegratedSpectralAveragesSummaryValues summary objects
         contained in the integrated_spectral_averages_summaries List.
 
-        This property will return a 'predefined' value if one was defined by the user
-        in the header of the original submission file.
+        Args:
+            calculation_standard_name:      Calculation standard name to use when searching
+                                            for a spectral averages integrated summary values object
+                                            amongst those generated for this product.
 
-        Otherwise, it returns the calculated value from WinCalc, if available.
 
-        :param calculation_standard_name:
+        Returns:
+            This property will return a 'calculated' value if one was generated by pywincalc.
+            Otherwise, it returns the calculated value from WinCalc, if available.
+            If neither value is available, it returns None.
+
         """
-
-        if self.physical_properties.predefined_emissivity_back is not None: # We want '0' to be handled here
-            return self.physical_properties.predefined_emissivity_back
-
+        # If we have a calculated value for the given standard, return that...
         if self.integrated_spectral_averages_summaries:
-            for summary_values in self.integrated_spectral_averages_summaries:
-                if summary_values.standard == calculation_standard_name:
-                    return summary_values.thermal_ir.emissivity_back_hemispheric
+            for summary in self.integrated_spectral_averages_summaries:
+                if summary.calculation_standard == calculation_standard_name:
+                    value = summary.summary_values.thermal_ir.emissivity_back_hemispheric
+                    if value:
+                        return value
+            # If we don't have a calculated value, we might have a 'user defined' value (from
+            # a header line in submission file). If so, return that...
+        if self.physical_properties and self.physical_properties.predefined_emissivity_front:
+            return self.physical_properties.predefined_emissivity_back
         return None
 
     @property
-    def tir_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) -> Optional[float]:
+    def tir_front(self, calculation_standard_name: str = CalculationStandardName.NFRC.name) \
+            -> Optional[float]:
         """
         TIR (front) is defined in IntegratedSpectralAveragesSummaryValues summary objects
         contained in the integrated_spectral_averages_summaries List.
 
-        This property will return a 'predefined' value if one was defined by the user
-        in the header of the original submission file.
+        Args:
+            calculation_standard_name:      Calculation standard name to use when searching
+                                            for a spectral averages integrated summary values object
+                                            amongst those generated for this product.
 
-        Otherwise, it returns the calculated value from WinCalc, if available.
-
-        :param calculation_standard_name:
+        Returns:
+            This property will return a 'calculated' value if one was generated by pywincalc.
+            Otherwise, it returns the calculated value from WinCalc, if available.
+            If neither value is available, it returns None.
 
         """
 
-        if self.physical_properties.predefined_tir_front is not None: # We want '0' to be handled here
-            return self.physical_properties.predefined_tir_front
-
+        # If we have a calculated value for the given standard, return that...
         if self.integrated_spectral_averages_summaries:
-            for summary_values in self.integrated_spectral_averages_summaries:
-                if summary_values.standard == calculation_standard_name:
-                    return summary_values.thermal_ir.transmittance_front
+            for summary in self.integrated_spectral_averages_summaries:
+                if summary.calculation_standard == calculation_standard_name:
+                    value = summary.summary_values.thermal_ir.transmittance_front
+                    if value:
+                        return value
+        # If we don't have a calculated value, we might have a 'user defined' value (from
+        # a header line in submission file). If so, return that...
+        if self.physical_properties and self.physical_properties.predefined_emissivity_front:
+            return self.physical_properties.predefined_tir_front
         return None
 
     @property
@@ -182,19 +294,27 @@ class Product:
         TIR (back) is defined in IntegratedSpectralAveragesSummaryValues summary objects
         contained in the integrated_spectral_averages_summaries List.
 
-        This property will return a 'predefined' value if one was defined by the user
-        in the header of the original submission file.
+        Args:
+            calculation_standard_name:      Calculation standard name to use when searching
+                                            for a spectral averages integrated summary values object
+                                            amongst those generated for this product.
 
-        Otherwise, it returns the calculated value from WinCalc, if available.
 
-        :param calculation_standard_name:
+        Returns:
+            This property will return a 'calculated' value if one was generated by pywincalc.
+            Otherwise, it returns the calculated value from WinCalc, if available.
+            If neither value is available, it returns None.
 
         """
-        if self.physical_properties.predefined_tir_back is not None: # We want '0' to be handled here
-            return self.physical_properties.predefined_tir_back
-
+        # If we have a calculated value for the given standard, return that...
         if self.integrated_spectral_averages_summaries:
-            for summary_values in self.integrated_spectral_averages_summaries:
-                if summary_values.standard == calculation_standard_name:
-                    return summary_values.thermal_ir.transmittance_back
+            for summary in self.integrated_spectral_averages_summaries:
+                if summary.calculation_standard == calculation_standard_name:
+                    value = summary.summary_values.thermal_ir.transmittance_back
+                    if value:
+                        return value
+        # If we don't have a calculated value, we might have a 'user defined' value (from
+        # a header line in submission file). If so, return that...
+        if self.physical_properties and self.physical_properties.predefined_tir_back:
+            return self.physical_properties.predefined_emissivity_back
         return None
