@@ -1,74 +1,12 @@
 from dataclasses import field
-from enum import Enum
 from typing import List, Dict, Optional
 
 from py_igsdb_base_data.optical import OpticalProperties, IntegratedSpectralAveragesSummaryValues
+from py_igsdb_base_data.product import ProductType, ProductSubtype, TokenType
 from py_igsdb_base_data.standard import CalculationStandardName
 from pydantic.dataclasses import dataclass
 
 from opticalc.material import MaterialBulkProperties
-
-
-class TokenType(Enum):
-    PUBLISHED = "PUBLISHED"
-    UNDEFINED = "UNDEFINED"
-    PROPOSED = "PROPOSED"
-    INTRAGROUP = "INTRAGROUP"
-
-
-class ProductType(Enum):
-    GLAZING = "GLAZING"
-    SHADING = "SHADING"
-    MATERIAL = "MATERIAL"
-
-
-class ProductSubtype(Enum):
-    # GLAZING Subtypes
-    # ----------------------------------------
-    MONOLITHIC = "Monolithic"
-    LAMINATE = "Laminate"
-    INTERLAYER = "Interlayer"
-    EMBEDDED_COATING = "Embedded coating"
-    COATED = "Coated glass"
-    COATING = "Coating"
-    APPLIED_FILM = "Applied film"
-    FILM = "Film"
-
-    # HYBRID GLAZING / SHADING Subtypes
-    # ----------------------------------------
-    FRITTED_GLASS = "Fritted glass"
-    SANDBLASTED_GLASS = "Sandblasted glass"
-    ACID_ETCHED_GLASS = "Acid etched glass"
-    CHROMOGENIC = "Chromogenic"
-
-    # SHADING Subtypes
-    # ----------------------------------------
-
-    # These have a geometry (GeometricProperties object)
-    # associated with them:
-    VENETIAN_BLIND = "Venetian blind"
-    VERTICAL_LOUVER = "Vertical louver"
-    PERFORATED_SCREEN = "Perforated screen"
-    WOVEN_SHADE = "Woven shade"
-
-    # These must have a BSDF associated:
-    ROLLER_SHADE = "Roller shade"
-
-    # These must have a GEN_BSDF file attached
-    # (and may have a THMX -- a precursor to GEN_BSDF -- file attached):
-    CELLULAR_SHADE = "Cellular shade"
-    PLEATED_SHADE = "Pleated Shade"
-    ROMAN_SHADE = "Roman shade"
-
-    # TODO: What qualities do these have?
-    DIFFUSING_SHADE = "Diffusing shade"
-    SOLAR_SCREEN = "Solar screen"
-
-    # Shading materials:
-    SHADE_MATERIAL = "Shade material"
-
-    # other
-    UNKNOWN = "Unknown"
 
 
 @dataclass
