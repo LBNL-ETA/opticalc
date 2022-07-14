@@ -6,7 +6,7 @@ from py_igsdb_base_data.optical import OpticalStandardMethodResults
 from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.integrated import calc_optical
-from opticalc.product import Product
+from py_igsdb_base_data.product import BaseProduct
 from opticalc.util import convert_product
 
 OPTICAL_STANDARD_PATH_NFRC = os.path.join(os.path.dirname(__file__), "./standards/W5_NFRC_2003.std")
@@ -19,11 +19,11 @@ def test_generate_optical_values():
     """
 
     optical_standard: pywincalc.OpticalStandard = pywincalc.load_standard(OPTICAL_STANDARD_PATH_NFRC)
-    sample_monolithic_path = os.path.join(os.path.dirname(__file__), "./data/sample_monolithic.json")
+    sample_monolithic_path = os.path.join(os.path.dirname(__file__), "./data/valid_monolithic_1.json")
     with open(sample_monolithic_path) as f:
         sample_monolithic_json = json.load(f)
 
-    product = Product(**sample_monolithic_json)
+    product = BaseProduct.from_dict(sample_monolithic_json)
     pywincalc_layer: pywincalc.ProductDataOpticalAndThermal = convert_product(product)
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])

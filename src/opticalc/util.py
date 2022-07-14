@@ -1,25 +1,41 @@
+import logging
+from typing import List
+
+import pywincalc
 from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult
+from py_igsdb_base_data.product import ProductSubtype
 
-from opticalc.product import ProductSubtype
+logger = logging.getLogger(__name__)
 
 
-def convert_wavelength_data(raw_wavelength_data):
+def convert_wavelength_data(raw_wavelength_data) -> List[pywincalc.WavelengthData]:
     pywincalc_wavelength_measured_data = []
     for individual_wavelength_measurement in raw_wavelength_data:
-        wavelength = individual_wavelength_measurement["w"]
+
+        wavelength = individual_wavelength_measurement.get("w", None)
+        if not wavelength:
+            raise Exception(f"Missing wavelength property 'w' in {individual_wavelength_measurement}") from e
+
+        wavelength = float(wavelength)
+
+        specular = individual_wavelength_measurement.get("specular", None)
+        if not specular:
+            raise Exception(f"Missing 'specular' property in {individual_wavelength_measurement}") from e
+
         # In this case the raw data only has the direct component measured
         # Diffuse measured data is also not yet supported in the calculations
         direct_component = pywincalc.OpticalMeasurementComponent(
-            individual_wavelength_measurement["specular"]["tf"],
-            individual_wavelength_measurement["specular"]["tb"],
-            individual_wavelength_measurement["specular"]["rf"],
-            individual_wavelength_measurement["specular"]["rb"])
-        pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
+            float(specular['tf']),
+            float(specular["tb"]),
+            float(specular["rf"]),
+            float(specular["rb"]))
+
+        try:
+            pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
+        except Exception as e:
+            raise Exception(f"cannot convert wavelength data to pywincalc WavelengthData type: {e}") from e
 
     return pywincalc_wavelength_measured_data
-
-
-import pywincalc
 
 
 def convert_subtype(subtype):
@@ -75,23 +91,44 @@ def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
     except Exception as e:
         raise Exception("Could not find wavelength data in product : {product}") from e
 
-    wavelength_data = convert_wavelength_data(wavelength_data)
+    try:
+        wavelength_data = convert_wavelength_data(wavelength_data)
+    except Exception as e:
+        logger.exception(f"Could not convert wavelength data : {e}")
+        raise e
+
     material_type = convert_subtype(product.subtype)
     material_thickness = product.physical_properties.thickness
 
     # We use the top-level properties on 'product' to get emissivity and TIR.
     # These property methods will return a predefined value if one exists,
     # otherwise will return a calculated value if one exists.
-    emissivity_front = product.emissivity_front
-    emissivity_back = product.emissivity_back
-    ir_transmittance_front = product.tir_front
-    ir_transmittance_back = product.tir_back
+    emissivity_front = product.get_emissivity_front()
+    if emissivity_front is not None:
+        emissivity_front = float(emissivity_front)
+
+    emissivity_back = product.get_emissivity_back()
+    if emissivity_back is not None:
+        emissivity_back = float(emissivity_back)
+
+    ir_transmittance_front = product.get_tir_front()
+    if ir_transmittance_front is not None:
+        ir_transmittance_front = float(ir_transmittance_front)
+
+    ir_transmittance_back = product.get_tir_back()
+    if ir_transmittance_back is not None:
+        ir_transmittance_back = float(ir_transmittance_back)
 
     coated_side = convert_coated_side(product.coated_side)
 
-    optical_data = pywincalc.ProductDataOpticalNBand(material_type, material_thickness, wavelength_data, coated_side,
-                                                     ir_transmittance_front, ir_transmittance_back,
-                                                     emissivity_front, emissivity_back)
+    optical_data = pywincalc.ProductDataOpticalNBand(material_type,
+                                                     float(material_thickness),
+                                                     wavelength_data,
+                                                     coated_side,
+                                                     ir_transmittance_front,
+                                                     ir_transmittance_back,
+                                                     emissivity_front,
+                                                     emissivity_back)
 
     layer = pywincalc.ProductDataOpticalAndThermal(optical_data, None)
     return layer

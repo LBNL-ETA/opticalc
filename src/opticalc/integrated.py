@@ -5,10 +5,10 @@ from py_igsdb_base_data.optical import OpticalStandardMethodResults, OpticalColo
     IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, ThermalIRResults, \
     OpticalStandardMethodFluxResults, \
     IntegratedSpectralAveragesSummaryValuesFactory
+from py_igsdb_base_data.product import BaseProduct
 from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.exceptions import SpectralAveragesSummaryCalculationException
-from opticalc.product import Product
 from opticalc.util import convert_trichromatic_result, convert_lab_result, convert_rgb_result, convert_product
 
 logger = logging.getLogger(__name__)
@@ -260,7 +260,7 @@ def generate_thermal_ir_results(optical_standard: pywincalc.OpticalStandard,
     return translated_results
 
 
-def generate_integrated_spectral_averages_summary(product: Product,
+def generate_integrated_spectral_averages_summary(product: BaseProduct,
                                                   optical_standard: pywincalc.OpticalStandard) \
         -> IntegratedSpectralAveragesSummaryValues:
     """

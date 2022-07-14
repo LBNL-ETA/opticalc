@@ -1,6 +1,6 @@
 import pytest
 
-from opticalc.product import Product, ProductType, ProductSubtype
+from py_igsdb_base_data.product import BaseProduct, ProductType, ProductSubtype
 
 
 def test_product_dataclass():
@@ -15,7 +15,7 @@ def test_product_dataclass():
     bad_subtype = "DOES_NOT_EXIST_SUBTYPE"
 
     with pytest.raises(ValueError):
-        p = Product(type=bad_type, subtype=valid_subtype)
+        p = BaseProduct(type=bad_type, subtype=valid_subtype)
 
     with pytest.raises(ValueError):
-        p = Product(type=valid_type, subtype=bad_subtype)
+        p = BaseProduct(type=valid_type, subtype=bad_subtype)
