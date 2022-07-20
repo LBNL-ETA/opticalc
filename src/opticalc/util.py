@@ -2,7 +2,7 @@ import logging
 from typing import List
 
 import pywincalc
-from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult
+from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult, OpticalData
 from py_igsdb_base_data.product import ProductSubtype
 
 logger = logging.getLogger(__name__)
@@ -80,12 +80,12 @@ def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
     Instance of pywincalc.ProductDataOpticalAndThermal
     """
 
-    optical_data = product.physical_properties.optical_properties.optical_data
+    optical_data: OpticalData = product.physical_properties.optical_properties.optical_data
     if not optical_data:
         raise Exception(f"No optical_data is defined on product: {product}")
 
     try:
-        wavelength_data = optical_data["angle_blocks"][0]["wavelength_data"]
+        wavelength_data = optical_data.angle_blocks[0].wavelength_data
         if not wavelength_data:
             raise Exception("No wavelength data")
     except Exception as e:
