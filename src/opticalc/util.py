@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Dict
 
 import pywincalc
 from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult, OpticalData
@@ -8,19 +8,33 @@ from py_igsdb_base_data.product import ProductSubtype
 logger = logging.getLogger(__name__)
 
 
-def convert_wavelength_data(raw_wavelength_data) -> List[pywincalc.WavelengthData]:
+def convert_wavelength_data(raw_wavelength_data: List[Dict]) -> List[pywincalc.WavelengthData]:
+    """
+    Converts a list of wavelength data objects into a form that can be used in Pywincalc.
+
+    TODO: The LBNL team is current discussing how to handle wavelength data with both specular and diffuse values.
+
+    Args:
+
+        raw_wavelength_data:        A list of dictionaries in the shape of (but not necessarily
+                                    actual instances of) py_igsdb_base_data.optical.WavelengthMeasurementSet.
+
+    Returns:
+        A list of pywincalc.OpticalMeasurementComponent instances.
+
+    """
     pywincalc_wavelength_measured_data = []
     for individual_wavelength_measurement in raw_wavelength_data:
 
         wavelength = individual_wavelength_measurement.get("w", None)
         if not wavelength:
-            raise Exception(f"Missing wavelength property 'w' in {individual_wavelength_measurement}") from e
+            raise Exception(f"Missing wavelength property 'w' in {individual_wavelength_measurement}")
 
         wavelength = float(wavelength)
 
         specular = individual_wavelength_measurement.get("specular", None)
         if not specular:
-            raise Exception(f"Missing 'specular' property in {individual_wavelength_measurement}") from e
+            raise Exception(f"Missing 'specular' property in {individual_wavelength_measurement}")
 
         # In this case the raw data only has the direct component measured
         # Diffuse measured data is also not yet supported in the calculations
