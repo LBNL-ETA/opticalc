@@ -284,8 +284,14 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])
 
-    for method_name in [item.name for item in CalculationStandardMethodTypes]:
-        # Only calculate results for a method if it's supported in the current optical standard...
+    optical_methods = [CalculationStandardMethodTypes.PHOTOPIC.name,
+                       CalculationStandardMethodTypes.SOLAR.name,
+                       CalculationStandardMethodTypes.TDW.name,
+                       CalculationStandardMethodTypes.TKR.name,
+                       CalculationStandardMethodTypes.TUV.name]
+    for method_name in optical_methods:
+        # Only calculate results for an optical calculation standard method
+        # if it's supported in the current optical standard...
         if method_name in optical_standard.methods:
             try:
                 results: OpticalStandardMethodResults = calc_optical(glazing_system, method_name)
@@ -295,9 +301,9 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
                 logger.error(f"OptiCalc : {error_msg} : {e}")
                 raise SpectralAveragesSummaryCalculationException(error_msg) from e
         else:
-            logger.info(f"generate_integrated_spectral_averages_summary() skipping method {method_name} as its not "
-                        f"present in the methods for optical standard {optical_standard} "
-                        f"( methods : {optical_standard.methods} )")
+            logger.warning(f"generate_integrated_spectral_averages_summary() skipping method {method_name} as its not "
+                           f"present in the methods for optical standard {optical_standard} "
+                           f"( methods : {optical_standard.methods} )")
 
     try:
         summary_results.color = calc_color(glazing_system)
@@ -307,6 +313,10 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
                     f"glazing_system {glazing_system}"
         logger.error(f"OptiCalc : {error_msg}  error : {e}")
         raise SpectralAveragesSummaryCalculationException(error_msg) from e
+
+    # TODO:
+    #   Check explicitly for IR wavelength values and existence of ir_transmittance_front
+    #   and ir_transmittance_back and emissivity front / back
 
     try:
         summary_results.thermal_ir = generate_thermal_ir_results(optical_standard, pywincalc_layer)

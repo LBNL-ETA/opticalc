@@ -12,12 +12,17 @@ def convert_wavelength_data(raw_wavelength_data: List[Dict]) -> List[pywincalc.W
     """
     Converts a list of wavelength data objects into a form that can be used in Pywincalc.
 
+    IMPORTANT: raw wavelength data must be in microns.
+
     TODO: The LBNL team is current discussing how to handle wavelength data with both specular and diffuse values.
+
+    TODO: Add check for microns. Look at first value.
 
     Args:
 
         raw_wavelength_data:        A list of dictionaries in the shape of (but not necessarily
                                     actual instances of) py_igsdb_base_data.optical.WavelengthMeasurementSet.
+                                    Must be in microns.
 
     Returns:
         A list of pywincalc.OpticalMeasurementComponent instances.
