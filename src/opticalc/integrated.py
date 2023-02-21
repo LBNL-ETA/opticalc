@@ -284,11 +284,12 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])
 
+
     optical_methods = [CalculationStandardMethodTypes.PHOTOPIC.name,
                        CalculationStandardMethodTypes.SOLAR.name,
                        CalculationStandardMethodTypes.TDW.name,
                        CalculationStandardMethodTypes.TKR.name,
-                       CalculationStandardMethodTypes.TUV.name]
+                       CalculationStandardMethodTypes.TUV.name] # We do not include THERMAL_IR and SPF
     for method_name in optical_methods:
         # Only calculate results for an optical calculation standard method
         # if it's supported in the current optical standard...
