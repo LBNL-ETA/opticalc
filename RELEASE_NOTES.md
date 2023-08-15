@@ -1,5 +1,11 @@
 Release Notes:
 
+
+0.0.13
+- Updated pydantic dependency to 2.2.1
+- Updated py_igsdb_base_data dependency to 0.0.34
+
+
 0.0.5
 - Updated pywincalc to 2.4.2 
   - This pywincalc version has improved calculation of integrated spectral averages for shading layers with BSDF
