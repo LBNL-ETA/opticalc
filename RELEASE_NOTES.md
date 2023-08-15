@@ -4,6 +4,7 @@ Release Notes:
 0.0.13
 - Updated pydantic dependency to 2.2.1
 - Updated py_igsdb_base_data dependency to 0.0.34
+- Update pywincalc to 3.2.0
 
 
 0.0.5
