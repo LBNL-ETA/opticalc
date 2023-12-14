@@ -8,9 +8,11 @@ from unittest import TestCase
 
 import pywincalc
 from dataclasses_json import dataclass_json
+from py_igsdb_base_data.optical import LabResult, RGBResult
 from py_igsdb_base_data.product import ProductSubtype, BaseProduct
 
-from opticalc.util import convert_wavelength_data, convert_subtype, convert_coated_side, convert_product
+from opticalc.util import convert_wavelength_data, convert_subtype, convert_coated_side, convert_product, \
+    convert_to_trichromatic_result, convert_to_lab_result
 
 
 @dataclass_json
@@ -101,3 +103,38 @@ class TestUtil(TestCase):
         self.assertEqual(pywincalc_product.optical_data.wavelength_data[0].direct_component.transmittance_back, 0.0006)
         self.assertEqual(pywincalc_product.optical_data.wavelength_data[0].direct_component.reflectance_front, 0.0547)
         self.assertEqual(pywincalc_product.optical_data.wavelength_data[0].direct_component.reflectance_back, 0.0621)
+
+    def test_convert_to_trichromatic_result(self):
+        self.assertIsNone(convert_to_trichromatic_result(None))
+
+        # We can't create a Pywincalc TrichromaticResult directly, so we create a
+        # Pywincalc glazing system, calculate color and access the Trichromatic instance
+        # for our test.
+
+        clear_3_path = "tests/data/CLEAR_3.DAT"
+        clear_3 = pywincalc.parse_optics_file(clear_3_path)
+        solid_layers = [clear_3]
+        glazing_system = pywincalc.GlazingSystem(solid_layers=solid_layers)
+        results = glazing_system.color()
+        results = results.system_results
+        input_trichromatic = results.front.transmittance.direct_direct.trichromatic
+        trichromatic_result = convert_to_trichromatic_result(input_trichromatic)
+        self.assertEqual(input_trichromatic.X, trichromatic_result.x)
+        self.assertEqual(input_trichromatic.Y, trichromatic_result.y)
+        self.assertEqual(input_trichromatic.Z, trichromatic_result.z)
+
+    def convert_to_lab_result(self):
+        self.assertIsNone(convert_to_lab_result(None))
+
+        lab = pywincalc.Lab(l=1, a=2, b=3)
+        result = convert_to_lab_result(lab)
+        expected_output = LabResult(l=1, a=2, b=3)
+        self.assertEqual(result, expected_output)
+
+    def convert_to_rgb_result(self):
+        self.assertIsNone(convert_to_lab_result(None))
+
+        rgb = pywincalc.RGB(r=1, g=2, b=3)
+        result = convert_to_lab_result(rgb)
+        expected_output = RGBResult(r=1, g=2, b=3)
+        self.assertEqual(result, expected_output)

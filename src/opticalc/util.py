@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 import pywincalc
 from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult, OpticalData
@@ -202,13 +202,34 @@ def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
     return layer
 
 
-def convert_trichromatic_result(trichromatic):
+def convert_to_trichromatic_result(trichromatic) -> Optional[TrichromaticResult]:
+    """
+    Converts a pywincalc.TrichromaticResult instance into
+    a py_igsdb_base_data.optical.TrichromaticResult instance.
+    
+    If None is provided, None is returned.
+    
+    """
+    if not trichromatic:
+        return None
     return TrichromaticResult(x=trichromatic.X, y=trichromatic.Y, z=trichromatic.Z)
 
 
-def convert_lab_result(lab):
+def convert_to_lab_result(lab) -> Optional[LabResult]:
+    """
+    Converts a pywincalc.LabResult instance into
+    a py_igsdb_base_data.optical.LabResult instance.
+    """
+    if not lab:
+        return None
     return LabResult(l=lab.L, a=lab.a, b=lab.b)
 
 
-def convert_rgb_result(rgb):
+def convert_to_rgb_result(rgb) -> Optional[RGBResult]:
+    """
+    Converts a pywincalc.RGBResult instance into
+    a py_igsdb_base_data.optical.RGBResult instance.
+    """
+    if not rgb:
+        return None
     return RGBResult(r=rgb.R, g=rgb.G, b=rgb.B)

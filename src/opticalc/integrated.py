@@ -9,7 +9,7 @@ from py_igsdb_base_data.product import BaseProduct
 from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.exceptions import SpectralAveragesSummaryCalculationException
-from opticalc.util import convert_trichromatic_result, convert_lab_result, convert_rgb_result, convert_product
+from opticalc.util import convert_to_trichromatic_result, convert_to_lab_result, convert_to_rgb_result, convert_product
 
 logger = logging.getLogger(__name__)
 
@@ -102,27 +102,27 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
     try:
         results = glazing_system.color()
         results = results.system_results
-        direct_direct_front_transmittance_trichromatic = convert_trichromatic_result(
+        direct_direct_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.direct_direct.trichromatic)
-        direct_direct_front_transmittance_lab = convert_lab_result(results.front.transmittance.direct_direct.lab)
-        direct_direct_front_transmittance_rgb = convert_rgb_result(results.front.transmittance.direct_direct.rgb)
+        direct_direct_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.direct_direct.lab)
+        direct_direct_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.direct_direct.rgb)
 
-        direct_diffuse_front_transmittance_trichromatic = convert_trichromatic_result(
+        direct_diffuse_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.direct_diffuse.trichromatic)
-        direct_diffuse_front_transmittance_lab = convert_lab_result(results.front.transmittance.direct_diffuse.lab)
-        direct_diffuse_front_transmittance_rgb = convert_rgb_result(results.front.transmittance.direct_diffuse.rgb)
+        direct_diffuse_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.direct_diffuse.lab)
+        direct_diffuse_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.direct_diffuse.rgb)
 
-        direct_hemispherical_front_transmittance_trichromatic = convert_trichromatic_result(
+        direct_hemispherical_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.direct_hemispherical.trichromatic)
-        direct_hemispherical_front_transmittance_lab = convert_lab_result(
+        direct_hemispherical_front_transmittance_lab = convert_to_lab_result(
             results.front.transmittance.direct_hemispherical.lab)
-        direct_hemispherical_front_transmittance_rgb = convert_rgb_result(
+        direct_hemispherical_front_transmittance_rgb = convert_to_rgb_result(
             results.front.transmittance.direct_hemispherical.rgb)
 
-        diffuse_diffuse_front_transmittance_trichromatic = convert_trichromatic_result(
+        diffuse_diffuse_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.diffuse_diffuse.trichromatic)
-        diffuse_diffuse_front_transmittance_lab = convert_lab_result(results.front.transmittance.diffuse_diffuse.lab)
-        diffuse_diffuse_front_transmittance_rgb = convert_rgb_result(results.front.transmittance.diffuse_diffuse.rgb)
+        diffuse_diffuse_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.diffuse_diffuse.lab)
+        diffuse_diffuse_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.diffuse_diffuse.rgb)
 
         translated_results.transmittance_front = OpticalColorFluxResults(
             direct_direct=OpticalColorResult(
@@ -142,27 +142,27 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
                 lab=diffuse_diffuse_front_transmittance_lab,
                 rgb=diffuse_diffuse_front_transmittance_rgb))
 
-        direct_direct_front_reflectance_trichromatic = convert_trichromatic_result(
+        direct_direct_front_reflectance_trichromatic = convert_to_trichromatic_result(
             results.front.reflectance.direct_direct.trichromatic)
-        direct_direct_front_reflectance_lab = convert_lab_result(results.front.reflectance.direct_direct.lab)
-        direct_direct_front_reflectance_rgb = convert_rgb_result(results.front.reflectance.direct_direct.rgb)
+        direct_direct_front_reflectance_lab = convert_to_lab_result(results.front.reflectance.direct_direct.lab)
+        direct_direct_front_reflectance_rgb = convert_to_rgb_result(results.front.reflectance.direct_direct.rgb)
 
-        direct_diffuse_front_reflectance_trichromatic = convert_trichromatic_result(
+        direct_diffuse_front_reflectance_trichromatic = convert_to_trichromatic_result(
             results.front.reflectance.direct_diffuse.trichromatic)
-        direct_diffuse_front_reflectance_lab = convert_lab_result(results.front.reflectance.direct_diffuse.lab)
-        direct_diffuse_front_reflectance_rgb = convert_rgb_result(results.front.reflectance.direct_diffuse.rgb)
+        direct_diffuse_front_reflectance_lab = convert_to_lab_result(results.front.reflectance.direct_diffuse.lab)
+        direct_diffuse_front_reflectance_rgb = convert_to_rgb_result(results.front.reflectance.direct_diffuse.rgb)
 
-        direct_hemispherical_front_reflectance_trichromatic = convert_trichromatic_result(
+        direct_hemispherical_front_reflectance_trichromatic = convert_to_trichromatic_result(
             results.front.reflectance.direct_hemispherical.trichromatic)
-        direct_hemispherical_front_reflectance_lab = convert_lab_result(
+        direct_hemispherical_front_reflectance_lab = convert_to_lab_result(
             results.front.reflectance.direct_hemispherical.lab)
-        direct_hemispherical_front_reflectance_rgb = convert_rgb_result(
+        direct_hemispherical_front_reflectance_rgb = convert_to_rgb_result(
             results.front.reflectance.direct_hemispherical.rgb)
 
-        diffuse_diffuse_front_reflectance_trichromatic = convert_trichromatic_result(
+        diffuse_diffuse_front_reflectance_trichromatic = convert_to_trichromatic_result(
             results.front.reflectance.diffuse_diffuse.trichromatic)
-        diffuse_diffuse_front_reflectance_lab = convert_lab_result(results.front.reflectance.diffuse_diffuse.lab)
-        diffuse_diffuse_front_reflectance_rgb = convert_rgb_result(results.front.reflectance.diffuse_diffuse.rgb)
+        diffuse_diffuse_front_reflectance_lab = convert_to_lab_result(results.front.reflectance.diffuse_diffuse.lab)
+        diffuse_diffuse_front_reflectance_rgb = convert_to_rgb_result(results.front.reflectance.diffuse_diffuse.rgb)
 
         translated_results.reflectance_front = OpticalColorFluxResults(
             direct_direct=OpticalColorResult(
@@ -182,27 +182,27 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
                 lab=diffuse_diffuse_front_reflectance_lab,
                 rgb=diffuse_diffuse_front_reflectance_rgb))
 
-        direct_direct_back_transmittance_trichromatic = convert_trichromatic_result(
+        direct_direct_back_transmittance_trichromatic = convert_to_trichromatic_result(
             results.back.transmittance.direct_direct.trichromatic)
-        direct_direct_back_transmittance_lab = convert_lab_result(results.back.transmittance.direct_direct.lab)
-        direct_direct_back_transmittance_rgb = convert_rgb_result(results.back.transmittance.direct_direct.rgb)
+        direct_direct_back_transmittance_lab = convert_to_lab_result(results.back.transmittance.direct_direct.lab)
+        direct_direct_back_transmittance_rgb = convert_to_rgb_result(results.back.transmittance.direct_direct.rgb)
 
-        direct_diffuse_back_transmittance_trichromatic = convert_trichromatic_result(
+        direct_diffuse_back_transmittance_trichromatic = convert_to_trichromatic_result(
             results.back.transmittance.direct_diffuse.trichromatic)
-        direct_diffuse_back_transmittance_lab = convert_lab_result(results.back.transmittance.direct_diffuse.lab)
-        direct_diffuse_back_transmittance_rgb = convert_rgb_result(results.back.transmittance.direct_diffuse.rgb)
+        direct_diffuse_back_transmittance_lab = convert_to_lab_result(results.back.transmittance.direct_diffuse.lab)
+        direct_diffuse_back_transmittance_rgb = convert_to_rgb_result(results.back.transmittance.direct_diffuse.rgb)
 
-        direct_hemispherical_back_transmittance_trichromatic = convert_trichromatic_result(
+        direct_hemispherical_back_transmittance_trichromatic = convert_to_trichromatic_result(
             results.back.transmittance.direct_hemispherical.trichromatic)
-        direct_hemispherical_back_transmittance_lab = convert_lab_result(
+        direct_hemispherical_back_transmittance_lab = convert_to_lab_result(
             results.back.transmittance.direct_hemispherical.lab)
-        direct_hemispherical_back_transmittance_rgb = convert_rgb_result(
+        direct_hemispherical_back_transmittance_rgb = convert_to_rgb_result(
             results.back.transmittance.direct_hemispherical.rgb)
 
-        diffuse_diffuse_back_transmittance_trichromatic = convert_trichromatic_result(
+        diffuse_diffuse_back_transmittance_trichromatic = convert_to_trichromatic_result(
             results.back.transmittance.diffuse_diffuse.trichromatic)
-        diffuse_diffuse_back_transmittance_lab = convert_lab_result(results.back.transmittance.diffuse_diffuse.lab)
-        diffuse_diffuse_back_transmittance_rgb = convert_rgb_result(results.back.transmittance.diffuse_diffuse.rgb)
+        diffuse_diffuse_back_transmittance_lab = convert_to_lab_result(results.back.transmittance.diffuse_diffuse.lab)
+        diffuse_diffuse_back_transmittance_rgb = convert_to_rgb_result(results.back.transmittance.diffuse_diffuse.rgb)
 
         translated_results.transmittance_back = OpticalColorFluxResults(
             direct_direct=OpticalColorResult(
@@ -222,27 +222,27 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
                 lab=diffuse_diffuse_back_transmittance_lab,
                 rgb=diffuse_diffuse_back_transmittance_rgb))
 
-        direct_direct_back_reflectance_trichromatic = convert_trichromatic_result(
+        direct_direct_back_reflectance_trichromatic = convert_to_trichromatic_result(
             results.back.reflectance.direct_direct.trichromatic)
-        direct_direct_back_reflectance_lab = convert_lab_result(results.back.reflectance.direct_direct.lab)
-        direct_direct_back_reflectance_rgb = convert_rgb_result(results.back.reflectance.direct_direct.rgb)
+        direct_direct_back_reflectance_lab = convert_to_lab_result(results.back.reflectance.direct_direct.lab)
+        direct_direct_back_reflectance_rgb = convert_to_rgb_result(results.back.reflectance.direct_direct.rgb)
 
-        direct_diffuse_back_reflectance_trichromatic = convert_trichromatic_result(
+        direct_diffuse_back_reflectance_trichromatic = convert_to_trichromatic_result(
             results.back.reflectance.direct_diffuse.trichromatic)
-        direct_diffuse_back_reflectance_lab = convert_lab_result(results.back.reflectance.direct_diffuse.lab)
-        direct_diffuse_back_reflectance_rgb = convert_rgb_result(results.back.reflectance.direct_diffuse.rgb)
+        direct_diffuse_back_reflectance_lab = convert_to_lab_result(results.back.reflectance.direct_diffuse.lab)
+        direct_diffuse_back_reflectance_rgb = convert_to_rgb_result(results.back.reflectance.direct_diffuse.rgb)
 
-        direct_hemispherical_back_reflectance_trichromatic = convert_trichromatic_result(
+        direct_hemispherical_back_reflectance_trichromatic = convert_to_trichromatic_result(
             results.back.reflectance.direct_hemispherical.trichromatic)
-        direct_hemispherical_back_reflectance_lab = convert_lab_result(
+        direct_hemispherical_back_reflectance_lab = convert_to_lab_result(
             results.back.reflectance.direct_hemispherical.lab)
-        direct_hemispherical_back_reflectance_rgb = convert_rgb_result(
+        direct_hemispherical_back_reflectance_rgb = convert_to_rgb_result(
             results.back.reflectance.direct_hemispherical.rgb)
 
-        diffuse_diffuse_back_reflectance_trichromatic = convert_trichromatic_result(
+        diffuse_diffuse_back_reflectance_trichromatic = convert_to_trichromatic_result(
             results.back.reflectance.diffuse_diffuse.trichromatic)
-        diffuse_diffuse_back_reflectance_lab = convert_lab_result(results.back.reflectance.diffuse_diffuse.lab)
-        diffuse_diffuse_back_reflectance_rgb = convert_rgb_result(results.back.reflectance.diffuse_diffuse.rgb)
+        diffuse_diffuse_back_reflectance_lab = convert_to_lab_result(results.back.reflectance.diffuse_diffuse.lab)
+        diffuse_diffuse_back_reflectance_rgb = convert_to_rgb_result(results.back.reflectance.diffuse_diffuse.rgb)
 
         translated_results.reflectance_back = OpticalColorFluxResults(
             direct_direct=OpticalColorResult(
