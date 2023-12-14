@@ -308,33 +308,45 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
         -> IntegratedSpectralAveragesSummaryValues:
     """
     Uses pywincalc to generate an integrated spectral averages summary for a given product
-    and standard.
+    and standard. Returns information in a populated instance of the IntegratedSpectralAveragesSummaryValues dataclass.
+
+    Note: some optical calculations may be skipped if the optical_standard passed in does not support them.
 
     Args:
-        product:            Instance of a product dataclass
+        product:            Instance of a BaseProduct dataclass.
         optical_standard:   Instance of a pywincalc OpticalStandard class.
 
     Returns:
         An instance of IntegratedSpectralAveragesSummaryValues dataclass populated with results.
 
     Raises:
+        ValueError if product or optical_standard is None.
         SpectralAveragesSummaryCalculationException if an error is encountered when generating or parsing
         results.
     """
+
+    if not product:
+        raise ValueError("product is None")
+    if not optical_standard:
+        raise ValueError("optical_standard is None")
 
     summary_results: IntegratedSpectralAveragesSummaryValues = IntegratedSpectralAveragesSummaryValuesFactory.create()
     pywincalc_layer: pywincalc.ProductDataOpticalAndThermal = convert_product(product)
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])
 
-    optical_methods = [CalculationStandardMethodTypes.PHOTOPIC.name,
-                       CalculationStandardMethodTypes.SOLAR.name,
-                       CalculationStandardMethodTypes.TDW.name,
-                       CalculationStandardMethodTypes.TKR.name,
-                       CalculationStandardMethodTypes.TUV.name]  # We do not include THERMAL_IR and SPF
+    # Iterate through optical methods and add the calculated results to the
+    # summary_results instance. Note that we may skip one or more methods, if
+    # they are not supported by the optical_standard passed in.
+    optical_methods = [
+        CalculationStandardMethodTypes.PHOTOPIC.name,
+        CalculationStandardMethodTypes.SOLAR.name,
+        CalculationStandardMethodTypes.TDW.name,
+        CalculationStandardMethodTypes.TKR.name,
+        CalculationStandardMethodTypes.TUV.name
+        # We do not include THERMAL_IR and SPF.
+    ]
     for method_name in optical_methods:
-        # Only calculate results for an optical calculation standard method
-        # if it's supported in the current optical standard...
         if method_name in optical_standard.methods:
             try:
                 results: OpticalStandardMethodResults = calc_optical(glazing_system, method_name)
@@ -348,6 +360,7 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
                            f"present in the methods for optical standard {optical_standard} "
                            f"( methods : {optical_standard.methods} )")
 
+    # Add color results to summary_results
     try:
         summary_results.color = calc_color(glazing_system)
     except Exception as e:
@@ -361,6 +374,7 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     #   Check explicitly for IR wavelength values and existence of ir_transmittance_front
     #   and ir_transmittance_back and emissivity front / back
 
+    # Add thermal IR results to summary_results
     try:
         summary_results.thermal_ir = generate_thermal_ir_results(optical_standard, pywincalc_layer)
     except Exception as e:
