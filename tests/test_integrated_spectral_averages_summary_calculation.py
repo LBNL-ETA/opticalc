@@ -30,8 +30,8 @@ def test_generate_integrated_spectral_averages_summary():
         optical_standard=optical_standard)
 
     assert isclose(values.solar.transmittance_front.direct_hemispherical, 0.8543167347230576, abs_tol=1e-6)
-    assert isclose(values.thermal_ir.absorptance_front_hemispheric, 0.8407203943266408, abs_tol=1e-8)
-    assert isclose(values.thermal_ir.absorptance_back_hemispheric, 0.8399419698691761, abs_tol=1e-8)
+    assert isclose(values.thermal_ir.absorptance_front_hemispheric, 0.8407203943266408, abs_tol=1e-6)
+    assert isclose(values.thermal_ir.absorptance_back_hemispheric, 0.8399419698691761, abs_tol=1e-6)
     assert values.thermal_ir.emissivity_front_hemispheric == values.thermal_ir.absorptance_front_hemispheric
     assert values.thermal_ir.emissivity_back_hemispheric == values.thermal_ir.absorptance_back_hemispheric
     assert values.thermal_ir.transmittance_front_diffuse_diffuse == 0

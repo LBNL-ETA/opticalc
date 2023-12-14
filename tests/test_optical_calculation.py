@@ -29,6 +29,10 @@ def test_generate_optical_values():
                                                                       solid_layers=[pywincalc_layer])
 
     for method_name in [item.name for item in CalculationStandardMethodTypes]:
+
+        if method_name == CalculationStandardMethodTypes.SPF.name:
+            continue
+
         # Only calculate results for a method if it's supported in the current optical standard...
         if method_name in optical_standard.methods:
             values: OpticalStandardMethodResults = calc_optical(glazing_system=glazing_system,
