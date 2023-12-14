@@ -1,5 +1,6 @@
 # Random Development Notes
-# (to be organized into documentation later)
+
+(to be organized into documentation later)
 
 # Notes on pywincalc weirdness
 
