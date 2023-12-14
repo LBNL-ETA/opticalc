@@ -58,12 +58,20 @@ def convert_wavelength_data(raw_wavelength_data: List[Dict]) -> List[pywincalc.W
 
 
 def convert_subtype(subtype):
-    subtype_mapping = {ProductSubtype.MONOLITHIC.name: pywincalc.MaterialType.MONOLITHIC,
-                       ProductSubtype.APPLIED_FILM.name: pywincalc.MaterialType.APPLIED_FILM,
-                       ProductSubtype.COATED.name: pywincalc.MaterialType.COATED,
-                       ProductSubtype.LAMINATE.name: pywincalc.MaterialType.LAMINATE,
-                       ProductSubtype.INTERLAYER.name: pywincalc.MaterialType.INTERLAYER,
-                       ProductSubtype.FILM.name: pywincalc.MaterialType.FILM}
+    """
+    Converts a product subtype into a PyWinCalc MaterialType
+    for optical calculations.
+    """
+    subtype_mapping = {
+        ProductSubtype.MONOLITHIC.name: pywincalc.MaterialType.MONOLITHIC,
+        ProductSubtype.APPLIED_FILM.name: pywincalc.MaterialType.APPLIED_FILM,
+        ProductSubtype.COATED.name: pywincalc.MaterialType.COATED,
+        ProductSubtype.LAMINATE.name: pywincalc.MaterialType.LAMINATE,
+        ProductSubtype.INTERLAYER.name: pywincalc.MaterialType.INTERLAYER,
+        ProductSubtype.FILM.name: pywincalc.MaterialType.FILM,
+        # This is for any shade material: fabric, monolithic, etc.
+        ProductSubtype.SHADE_MATERIAL.name: pywincalc.MaterialType.MONOLITHIC,
+    }
 
     pywincalc_material = subtype_mapping.get(subtype)
     if pywincalc_material is None:

@@ -15,6 +15,21 @@ logger = logging.getLogger(__name__)
 
 
 def calc_optical(glazing_system: pywincalc.GlazingSystem, method_name: str) -> OpticalStandardMethodResults:
+    """
+    Uses pywincalc to generate optical information for a given glazing system.
+
+    Args:
+        glazing_system: Instance of a pywincalc GlazingSystem
+        method_name:    Name of the optical method to use. Must be a valid method name in pywincalc.
+
+    Returns:
+        An instance of OpticalStandardMethodResults dataclass populated with results.
+
+    Raises:
+        ValueError if method_name is not a valid method name in pywincalc.
+        Exception if an error is encountered when generating or parsing results.
+
+    """
     try:
         CalculationStandardMethodTypes[method_name]
     except KeyError:
@@ -58,7 +73,8 @@ def calc_optical(glazing_system: pywincalc.GlazingSystem, method_name: str) -> O
         translated_results.absorptance_back_hemispheric = results.layer_results[0].back.absorptance.diffuse
 
     except Exception as e:
-        translated_results.error = e
+        logger.exception(f"calc_optical() call failed for method {method_name}")
+        raise e
 
     return translated_results
 
@@ -75,9 +91,12 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
         An instance of OpticalColorResults dataclass populated with results.
 
     Raises:
-        SpectralAveragesSummaryCalculationException if an error is encountered when generating or parsing
-        results.
+        ValueError if glazing_system is None.
+        Exception if an error is encountered when generating or parsing results.
     """
+
+    if not glazing_system:
+        raise ValueError("glazing_system is None")
 
     translated_results = OpticalColorResults()
     try:
@@ -244,19 +263,43 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
                 rgb=diffuse_diffuse_back_reflectance_rgb))
 
     except Exception as e:
-        translated_results.error = e
+        logger.exception(f"calc_color() call failed")
+        raise e
 
     return translated_results
 
 
 def generate_thermal_ir_results(optical_standard: pywincalc.OpticalStandard,
                                 pywincalc_layer: pywincalc.ProductDataOpticalAndThermal) -> ThermalIRResults:
-    translated_results = ThermalIRResults()
-    pywincalc_results = pywincalc.calc_thermal_ir(optical_standard, pywincalc_layer)
-    translated_results.transmittance_front_diffuse_diffuse = pywincalc_results.transmittance_front_diffuse_diffuse
-    translated_results.transmittance_back_diffuse_diffuse = pywincalc_results.transmittance_back_diffuse_diffuse
-    translated_results.absorptance_front_hemispheric = pywincalc_results.emissivity_front_hemispheric
-    translated_results.absorptance_back_hemispheric = pywincalc_results.emissivity_back_hemispheric
+    """
+    Uses pywincalc to generate thermal IR information for a given layer and standard.
+
+    Args:
+        optical_standard:   Instance of a pywincalc OpticalStandard class.
+        pywincalc_layer:    Instance of a pywincalc ProductDataOpticalAndThermal class.
+
+    Returns:
+        An instance of ThermalIRResults dataclass populated with results.
+
+
+    """
+
+    if not optical_standard:
+        raise ValueError("optical_standard is None")
+    if not pywincalc_layer:
+        raise ValueError("pywincalc_layer is None")
+
+    try:
+        translated_results = ThermalIRResults()
+        pywincalc_results = pywincalc.calc_thermal_ir(optical_standard, pywincalc_layer)
+        translated_results.transmittance_front_diffuse_diffuse = pywincalc_results.transmittance_front_diffuse_diffuse
+        translated_results.transmittance_back_diffuse_diffuse = pywincalc_results.transmittance_back_diffuse_diffuse
+        translated_results.absorptance_front_hemispheric = pywincalc_results.emissivity_front_hemispheric
+        translated_results.absorptance_back_hemispheric = pywincalc_results.emissivity_back_hemispheric
+    except Exception as e:
+        logger.exception(f"generate_thermal_ir_results() call failed")
+        raise e
+
     return translated_results
 
 
@@ -284,12 +327,11 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])
 
-
     optical_methods = [CalculationStandardMethodTypes.PHOTOPIC.name,
                        CalculationStandardMethodTypes.SOLAR.name,
                        CalculationStandardMethodTypes.TDW.name,
                        CalculationStandardMethodTypes.TKR.name,
-                       CalculationStandardMethodTypes.TUV.name] # We do not include THERMAL_IR and SPF
+                       CalculationStandardMethodTypes.TUV.name]  # We do not include THERMAL_IR and SPF
     for method_name in optical_methods:
         # Only calculate results for an optical calculation standard method
         # if it's supported in the current optical standard...
