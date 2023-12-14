@@ -61,7 +61,22 @@ def convert_subtype(subtype):
     """
     Converts a product subtype into a PyWinCalc MaterialType
     for optical calculations.
+
+    Args:
+        subtype:    A product subtype string.
+
+    Returns:
+        A PyWinCalc MaterialType enum.
+
+    Raises:
+        ValueError:     If no subtype is provided.
+        Exception:   If the subtype is not supported.
+
     """
+
+    if not subtype:
+        raise ValueError("No subtype provided")
+
     subtype_mapping = {
         ProductSubtype.MONOLITHIC.name: pywincalc.MaterialType.MONOLITHIC,
         ProductSubtype.APPLIED_FILM.name: pywincalc.MaterialType.APPLIED_FILM,
@@ -75,13 +90,30 @@ def convert_subtype(subtype):
 
     pywincalc_material = subtype_mapping.get(subtype)
     if pywincalc_material is None:
-        raise RuntimeError("Unsupported subtype: {t}".format(t=subtype))
+        raise Exception("Unsupported subtype: {t}".format(t=subtype))
+
     return pywincalc_material
 
 
 def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
+    """
+    Converts a coated side string into a PyWinCalc CoatedSide
+    instance.
+
+    Args:
+        coated_side:    A coated side string.
+
+    Returns:
+        A PyWinCalc CoatedSide enum.
+
+    Raises:
+
+
+    """
+
     if not coated_side:
         return pywincalc.CoatedSide.NEITHER
+
     coated_side = coated_side.upper()
     mapping = {
         "FRONT": pywincalc.CoatedSide.FRONT,
@@ -93,7 +125,7 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
     try:
         return mapping.get(coated_side)
     except KeyError:
-        raise RuntimeError(f"Unsupported coated side: {coated_side}")
+        raise Exception(f"Unsupported coated side: {coated_side}")
 
 
 def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
@@ -101,11 +133,20 @@ def convert_product(product) -> pywincalc.ProductDataOpticalAndThermal:
     Converts a product.Product dataclass instance into a
     dataclass instance that PyWinCalc can work with.
 
-    :param product:     Instance of a populated product.Product dataclass
+    Args:
+        product:     Instance of a populated product.Product dataclass
 
-    :return:
-    Instance of pywincalc.ProductDataOpticalAndThermal
+    Returns:
+        Instance of pywincalc.ProductDataOpticalAndThermal
+
+    Raises:
+        ValueError:     If no product is provided.
+        Exception:      If the product does not have optical data, or if
+                        the wavelength data cannot be converted.
     """
+
+    if not product:
+        raise ValueError("No product provided")
 
     optical_data: OpticalData = product.physical_properties.optical_properties.optical_data
     if not optical_data:

@@ -48,7 +48,7 @@
     "predefined_tir_front": null,
     "predefined_tir_back": null,
     "predefined_emissivity_front": "0.84",
-    "predefined_emissivity_back": "0.84",
+    "predefined_emissivity_back": "0.85",
     "permeability_factor": null,
     "optical_openness": null,
     "bulk_properties_override": {
@@ -70,7 +70,7 @@
                 "w": "0.300",
                 "specular": {
                   "tf": "0.0005",
-                  "tb": "0.0005",
+                  "tb": "0.0006",
                   "rf": "0.0547",
                   "rb": "0.0621"
                 }
