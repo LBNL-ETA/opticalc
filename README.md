@@ -9,9 +9,9 @@ spectral averages summaries.
 
 Opticalc attempts to abstract away the peculiarities of pywincalc,
 as well as use standard dataclasses and Enums to describe the type of data needed to calculate
-integrated spectral averages summaries. These foundational dataclasses and Enums are stored in a separate library so they
-can be accessed directly by other libraries and applications, like Opticalc,
-CheckertoolV2, and the IGSDBv2: https://github.com/LBNL-ETA/py_igsdb_base_data.
+integrated spectral averages summaries. These foundational dataclasses and Enums are stored in a separate library
+called `py_igsdb_base_data` (https://github.com/LBNL-ETA/py_igsdb_base_data) so that they can be accessed directly 
+by Opticalc and other libraries and applications, like CheckertoolV2.
 
 Here's a simple illustration of the relationship between these application and libraries:
 
