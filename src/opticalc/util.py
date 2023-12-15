@@ -49,8 +49,21 @@ def convert_wavelength_data(raw_wavelength_data: List[Dict]) -> List[pywincalc.W
             float(specular["rf"]),
             float(specular["rb"]))
 
+        diffuse = individual_wavelength_measurement.get("diffuse", None)
+        if diffuse:
+            diffuse_component = pywincalc.OpticalMeasurementComponent(
+                float(diffuse['tf']),
+                float(diffuse["tb"]),
+                float(diffuse["rf"]),
+                float(diffuse["rb"]))
+        else:
+            diffuse_component = None
+
         try:
-            pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
+            if diffuse_component:
+                pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component, diffuse_component))
+            else:
+                pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
         except Exception as e:
             raise Exception(f"cannot convert wavelength data to pywincalc WavelengthData type: {e}") from e
 
