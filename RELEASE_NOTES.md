@@ -1,5 +1,9 @@
 Release Notes:
 
+0.0.015
+
+- Added a get_optical_standard method for creating a pywincalc optical standard from a pywincalc optical standard file.
+
 0.0.14
 
 - Updated pydantic dependency to 2.5.2
