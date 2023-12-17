@@ -1,6 +1,10 @@
 Release Notes:
 
-0.0.015
+0.0.16
+
+- Refactored error handling in calc_optical
+
+0.0.15
 
 - Added a get_optical_standard method for creating a pywincalc optical standard from a pywincalc optical standard file.
 

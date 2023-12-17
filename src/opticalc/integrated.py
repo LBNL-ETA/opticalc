@@ -35,10 +35,18 @@ def calc_optical(glazing_system: pywincalc.GlazingSystem, method_name: str) -> O
     except KeyError:
         raise ValueError(f"Invalid method: {method_name}")
 
-    translated_results = OpticalStandardMethodResults()
     try:
         results = glazing_system.optical_method_results(method_name)
         system_results = results.system_results
+    except Exception as e:
+        err_message = (f"could not create a "
+                       f"pywincalc results object "
+                       f"with method_name: {method_name}")
+        logger.exception(f"calc_optical() {err_message}")
+        raise Exception(err_message) from e
+
+    translated_results = OpticalStandardMethodResults()
+    try:
         translated_results.transmittance_front = OpticalStandardMethodFluxResults(
             direct_direct=system_results.front.transmittance.direct_direct,
             direct_diffuse=system_results.front.transmittance.direct_diffuse,
