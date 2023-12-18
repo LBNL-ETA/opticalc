@@ -70,8 +70,10 @@ def convert_wavelength_data(raw_wavelength_data: List[Dict], use_diffuse_as_spec
 
         try:
             if diffuse_component:
-                pywincalc_wavelength_measured_data.append(
-                    pywincalc.WavelengthData(wavelength, direct_component, diffuse_component))
+                if not direct_component:
+                    raise Exception("Cannot have diffuse component without direct component")
+                wd = pywincalc.WavelengthData(wavelength, direct_component, diffuse_component)
+                pywincalc_wavelength_measured_data.append(wd)
             else:
                 pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
         except Exception as e:
