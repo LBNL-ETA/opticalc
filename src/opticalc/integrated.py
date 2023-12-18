@@ -333,9 +333,10 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     the specular and diffuse measurements if they are present, otherwise only use specular.
 
     Args:
-        product:                    Instance of a BaseProduct dataclass.
+        product:                    Instance of a py_igsdb_base_data BaseProduct dataclass.
         optical_standard:           Instance of a pywincalc OpticalStandard class.
-        use_diffuse_as_specular:    If True, the diffuse measurements will be used as the specular measurements.
+        use_diffuse_as_specular:    If True, the diffuse measurements will be used as the specular measurements
+                                    when building pywincalc WavelengthData objects.
 
     Returns:
         An instance of IntegratedSpectralAveragesSummaryValues dataclass populated with results.
