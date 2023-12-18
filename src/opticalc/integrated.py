@@ -325,7 +325,7 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     use diffuse measurements in the wavelength data in place of specular measurements.
 
     This is a temporary workaround for the fact that pywincalc cannot yet calculate both
-    specular and diffuse components. In the meantime, it's expected a user will run two calculations,
+    specular and diffuse components. In the meantime, it's expected Checkertool will run two calculations,
     one with specular and one with diffuse-as-specular, and then combine those into a single
     result with specular and diffuse components.
 
