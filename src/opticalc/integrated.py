@@ -319,7 +319,7 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     Uses pywincalc to generate an integrated spectral averages summary for a given product
     and standard. Returns information in a populated instance of the IntegratedSpectralAveragesSummaryValues dataclass.
 
-    Note: some optical calculations may be skipped if the optical_standard passed in does not support them.
+    Note: some optical calculation methods may be skipped if the optical_standard passed in does not support them.
 
     This method provides a 'use_diffuse_as_specular' argument to allow the user to
     use diffuse measurements in the wavelength data in place of specular measurements.
