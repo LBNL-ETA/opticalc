@@ -15,7 +15,6 @@ def test_generate_integrated_spectral_averages_summary():
     """
     Create a sample MONOLITHIC product and generate
     integrated spectral averages summary.
-    :return:
     """
 
     optical_standard = pywincalc.load_standard(OPTICAL_STANDARD_PATH_NFRC)
@@ -36,13 +35,12 @@ def test_generate_integrated_spectral_averages_summary():
     assert values.thermal_ir.emissivity_back_hemispheric == values.thermal_ir.absorptance_back_hemispheric
     assert values.thermal_ir.transmittance_front_diffuse_diffuse == 0
     assert values.thermal_ir.transmittance_back_diffuse_diffuse == 0
-
+    
 
 def test_calculate_emissivity_from_wavelengths():
     """
     Create a sample product with measurements into the IR range and generate
     integrated spectral averages summary.
-    :return:
     """
 
     optical_standard = pywincalc.load_standard(OPTICAL_STANDARD_PATH_NFRC)
