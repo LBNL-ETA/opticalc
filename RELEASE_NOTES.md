@@ -1,7 +1,9 @@
 Release Notes:
 
-0.0.16
+0.0.17
+- use pywincalc 3.2.0 in requirements
 
+0.0.16
 - Refactored error handling in calc_optical
 - Added check when creating Wavelength data with direct and diffuse component
 
