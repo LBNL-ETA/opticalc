@@ -3,6 +3,7 @@ Release Notes:
 0.0.16
 
 - Refactored error handling in calc_optical
+- Added check when creating Wavelength data with direct and diffuse component
 
 0.0.15
 
