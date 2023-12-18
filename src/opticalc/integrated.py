@@ -312,7 +312,8 @@ def generate_thermal_ir_results(optical_standard: pywincalc.OpticalStandard,
 
 
 def generate_integrated_spectral_averages_summary(product: BaseProduct,
-                                                  optical_standard: pywincalc.OpticalStandard) \
+                                                  optical_standard: pywincalc.OpticalStandard,
+                                                  use_diffuse_as_specular: bool = False) \
         -> IntegratedSpectralAveragesSummaryValues:
     """
     Uses pywincalc to generate an integrated spectral averages summary for a given product
@@ -320,9 +321,21 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
 
     Note: some optical calculations may be skipped if the optical_standard passed in does not support them.
 
+    This method provides a 'use_diffuse_as_specular' argument to allow the user to
+    use diffuse measurements in the wavelength data in place of specular measurements.
+
+    This is a temporary workaround for the fact that pywincalc cannot yet calculate both
+    specular and diffuse components. In the meantime, it's expected a user will run two calculations,
+    one with specular and one with diffuse-as-specular, and then combine those into a single
+    result with specular and diffuse components.
+
+    If the use_diffuse_as_specular arg is False, the standard procedure will be to use both
+    the specular and diffuse measurements if they are present, otherwise only use specular.
+
     Args:
-        product:            Instance of a BaseProduct dataclass.
-        optical_standard:   Instance of a pywincalc OpticalStandard class.
+        product:                    Instance of a BaseProduct dataclass.
+        optical_standard:           Instance of a pywincalc OpticalStandard class.
+        use_diffuse_as_specular:    If True, the diffuse measurements will be used as the specular measurements.
 
     Returns:
         An instance of IntegratedSpectralAveragesSummaryValues dataclass populated with results.
@@ -339,7 +352,8 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
         raise ValueError("optical_standard is None")
 
     summary_results: IntegratedSpectralAveragesSummaryValues = IntegratedSpectralAveragesSummaryValuesFactory.create()
-    pywincalc_layer: pywincalc.ProductDataOpticalAndThermal = convert_product(product)
+    pywincalc_layer: pywincalc.ProductDataOpticalAndThermal = convert_product(product,
+                                                                              use_diffuse_as_specular=use_diffuse_as_specular)
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(optical_standard=optical_standard,
                                                                       solid_layers=[pywincalc_layer])
 
