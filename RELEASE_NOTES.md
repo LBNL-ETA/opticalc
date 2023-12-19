@@ -1,5 +1,8 @@
 Release Notes:
 
+0.0.18
+- upgrade to pywincalc 3.3.1
+
 0.0.17
 - use pywincalc 3.2.0 in requirements
 
