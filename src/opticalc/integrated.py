@@ -77,8 +77,8 @@ def calc_optical(glazing_system: pywincalc.GlazingSystem, method_name: str) -> O
 
         translated_results.absorptance_front_direct = results.layer_results[0].front.absorptance.direct
         translated_results.absorptance_back_direct = results.layer_results[0].back.absorptance.direct
-        translated_results.absorptance_front_hemispheric = results.layer_results[0].front.absorptance.diffuse
-        translated_results.absorptance_back_hemispheric = results.layer_results[0].back.absorptance.diffuse
+        translated_results.absorptance_front_diffuse = results.layer_results[0].front.absorptance.diffuse
+        translated_results.absorptance_back_diffuse = results.layer_results[0].back.absorptance.diffuse
 
     except Exception as e:
         logger.exception(f"calc_optical() call failed for method {method_name}")
@@ -110,6 +110,7 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
     try:
         results = glazing_system.color()
         results = results.system_results
+
         direct_direct_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.direct_direct.trichromatic)
         direct_direct_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.direct_direct.lab)
@@ -120,6 +121,11 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
         direct_diffuse_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.direct_diffuse.lab)
         direct_diffuse_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.direct_diffuse.rgb)
 
+        diffuse_diffuse_front_transmittance_trichromatic = convert_to_trichromatic_result(
+            results.front.transmittance.diffuse_diffuse.trichromatic)
+        diffuse_diffuse_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.diffuse_diffuse.lab)
+        diffuse_diffuse_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.diffuse_diffuse.rgb)
+
         direct_hemispherical_front_transmittance_trichromatic = convert_to_trichromatic_result(
             results.front.transmittance.direct_hemispherical.trichromatic)
         direct_hemispherical_front_transmittance_lab = convert_to_lab_result(
@@ -127,10 +133,6 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
         direct_hemispherical_front_transmittance_rgb = convert_to_rgb_result(
             results.front.transmittance.direct_hemispherical.rgb)
 
-        diffuse_diffuse_front_transmittance_trichromatic = convert_to_trichromatic_result(
-            results.front.transmittance.diffuse_diffuse.trichromatic)
-        diffuse_diffuse_front_transmittance_lab = convert_to_lab_result(results.front.transmittance.diffuse_diffuse.lab)
-        diffuse_diffuse_front_transmittance_rgb = convert_to_rgb_result(results.front.transmittance.diffuse_diffuse.rgb)
 
         translated_results.transmittance_front = OpticalColorFluxResults(
             direct_direct=OpticalColorResult(
@@ -371,7 +373,21 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
         CalculationStandardMethodTypes.TDW.name,
         CalculationStandardMethodTypes.TKR.name,
         CalculationStandardMethodTypes.TUV.name
-        # We do not include THERMAL_IR and SPF during optical calcs.
+
+        # NOTE:
+        #   We do not include THERMAL_IR here as we do it further below.
+
+        # NOTE:
+        #   We skip SPF during optical calcs because of the following reasons
+        #   provided by JJ and SC:
+        #       -   SC: we need measured values down to .28 to calculated SPF, but almost all IGDB and CGDB records only have
+        #           down to .3.
+        #       -   JJ: there is also a fundamental difference in SPF in that it is inversely proportional to the
+        #           transmittance that prevents it from being directly calculated with the function used for all
+        #           other spectral average metrics. (IIRC you get a T_spf using the spectral averaging routine and
+        #           then report SPF as 1/T_spf).
+
+        # CalculationStandardMethodTypes.SPF.name
     ]
     for method_name in optical_methods:
         if method_name in optical_standard.methods:
