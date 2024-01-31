@@ -5,7 +5,7 @@ from py_igsdb_base_data.optical import OpticalStandardMethodResults, OpticalColo
     IntegratedSpectralAveragesSummaryValues, OpticalColorFluxResults, OpticalColorResult, ThermalIRResults, \
     OpticalStandardMethodFluxResults, \
     IntegratedSpectralAveragesSummaryValuesFactory
-from py_igsdb_base_data.product import BaseProduct
+from py_igsdb_base_data.product import BaseProduct, ProductSubtype
 from py_igsdb_base_data.standard import CalculationStandardMethodTypes
 
 from opticalc.exceptions import SpectralAveragesSummaryCalculationException
@@ -277,13 +277,16 @@ def calc_color(glazing_system: pywincalc.GlazingSystem) -> OpticalColorResults:
 
 
 def calc_thermal_ir_results(optical_standard: pywincalc.OpticalStandard,
-                            pywincalc_layer: pywincalc.ProductDataOpticalAndThermal) -> ThermalIRResults:
+                            pywincalc_layer: pywincalc.ProductDataOpticalAndThermal,
+                            ignore_emissivity: bool = False) -> ThermalIRResults:
     """
     Uses pywincalc to generate thermal IR information for a given layer and standard.
 
     Args:
-        optical_standard:   Instance of a pywincalc OpticalStandard class.
-        pywincalc_layer:    Instance of a pywincalc ProductDataOpticalAndThermal class.
+        optical_standard:       Instance of a pywincalc OpticalStandard class.
+        pywincalc_layer:        Instance of a pywincalc ProductDataOpticalAndThermal class.
+        ignore_emissivity:      There are times we don't want to store the generated emissivity, for example
+                                when calculating summary values for SHADE_MATERIAL subtype products.
 
     Returns:
         An instance of ThermalIRResults dataclass populated with results.
@@ -296,13 +299,18 @@ def calc_thermal_ir_results(optical_standard: pywincalc.OpticalStandard,
     if not pywincalc_layer:
         raise ValueError("pywincalc_layer is None")
 
+    # TODO: Ignore emissivity_front_hemispheric and emissivity_back_hemispheric for SHADE_MATERIAL subtype.
+
     try:
         translated_results = ThermalIRResults()
         pywincalc_results = pywincalc.calc_thermal_ir(optical_standard, pywincalc_layer)
         translated_results.transmittance_front_diffuse_diffuse = pywincalc_results.transmittance_front_diffuse_diffuse
         translated_results.transmittance_back_diffuse_diffuse = pywincalc_results.transmittance_back_diffuse_diffuse
-        translated_results.emissivity_front_hemispheric = pywincalc_results.emissivity_front_hemispheric
-        translated_results.emissivity_back_hemispheric = pywincalc_results.emissivity_back_hemispheric
+        if ignore_emissivity:
+            logger.info("Ignoring emissivity_front_hemispheric and emissivity_back_hemispheric from ThermalIRResults()")
+        else:
+            translated_results.emissivity_front_hemispheric = pywincalc_results.emissivity_front_hemispheric
+            translated_results.emissivity_back_hemispheric = pywincalc_results.emissivity_back_hemispheric
     except Exception as e:
         logger.exception(f"calc_thermal_ir_results() call failed")
         raise e
@@ -415,8 +423,13 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
     #   and ir_transmittance_back and emissivity front / back
 
     # Add thermal IR results to summary_results
+    # Per meeting in late Jan 2024, we will ignore emissivity for SHADE_MATERIAL subtype products.
+    # We only want to refer to header value emissivity for products of this subtype.
+    ignore_emissivity = product.subtype == ProductSubtype.SHADE_MATERIAL.name
     try:
-        summary_results.thermal_ir = calc_thermal_ir_results(optical_standard, pywincalc_layer)
+        summary_results.thermal_ir = calc_thermal_ir_results(optical_standard,
+                                                             pywincalc_layer,
+                                                             ignore_emissivity=ignore_emissivity)
     except Exception as e:
         error_msg = f"calc_thermal_ir_results() call failed for " \
                     f"layer: {pywincalc_layer} " \

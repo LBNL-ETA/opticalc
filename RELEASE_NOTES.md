@@ -1,12 +1,19 @@
 Release Notes:
 
+0.0.19
+
+- Ignore emissivity results when calculating thermal IR results for SHADE_MATERIAL products.
+
 0.0.18
+
 - upgrade to pywincalc 3.3.1
 
 0.0.17
+
 - use pywincalc 3.2.0 in requirements
 
 0.0.16
+
 - Refactored error handling in calc_optical
 - Added check when creating Wavelength data with direct and diffuse component
 
