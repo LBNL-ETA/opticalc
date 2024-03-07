@@ -1,5 +1,9 @@
 Release Notes:
 
+0.0.20
+
+- Updates py_igsdb_base_data to 0.0.51
+
 0.0.19
 
 - Ignore emissivity results when calculating thermal IR results for SHADE_MATERIAL products.
