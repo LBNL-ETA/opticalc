@@ -1,5 +1,9 @@
 Release Notes:
 
+0.0.21
+
+- Do not call pywincalc calc_thermal_ir if IR wavelength data is not present.
+
 0.0.20
 
 - Updates py_igsdb_base_data to 0.0.51
