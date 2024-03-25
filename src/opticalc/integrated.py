@@ -418,9 +418,10 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
         logger.error(f"OptiCalc : {error_msg}  error : {e}")
         raise SpectralAveragesSummaryCalculationException(error_msg) from e
 
-    # TODO:
-    #   Check explicitly for IR wavelength values and existence of ir_transmittance_front
-    #   and ir_transmittance_back and emissivity front / back
+    if not product.has_thermal_ir_wavelengths:
+        # Don't run thermal IR calculations if the product
+        # doesn't have thermal IR wavelength data.
+        return summary_results
 
     # Add thermal IR results to summary_results
     # Per meeting in late Jan 2024, we will ignore emissivity for SHADE_MATERIAL subtype products.
