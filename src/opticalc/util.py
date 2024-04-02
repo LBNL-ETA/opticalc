@@ -111,6 +111,7 @@ def convert_subtype(subtype):
         ProductSubtype.FILM.name: pywincalc.MaterialType.FILM,
         # This is for any shade material: fabric, monolithic, etc.
         ProductSubtype.SHADE_MATERIAL.name: pywincalc.MaterialType.MONOLITHIC,
+        ProductSubtype.ROLLER_SHADE.name: pywincalc.MaterialType.MONOLITHIC,
     }
 
     pywincalc_material = subtype_mapping.get(subtype)
