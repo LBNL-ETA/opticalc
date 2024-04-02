@@ -1,5 +1,9 @@
 Release Notes:
 
+0.0.22
+
+- Handle roller shade subtype as pywincalc MONOLITHIC
+
 0.0.21
 
 - Do not call pywincalc calc_thermal_ir if IR wavelength data is not present.
