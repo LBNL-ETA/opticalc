@@ -1,5 +1,9 @@
 Release Notes:
 
+0.0.23
+
+- Update dependencies
+
 0.0.22
 
 - Handle roller shade subtype as pywincalc MONOLITHIC
