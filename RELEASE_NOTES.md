@@ -1,4 +1,8 @@
-Release Notes:
+# Release Notes
+
+0.0.24
+
+- Update error message text
 
 0.0.23
 
@@ -51,7 +55,7 @@ Release Notes:
 0.0.5
 
 - Updated pywincalc to 2.4.2
-    - This pywincalc version has improved calculation of integrated spectral averages for shading layers with BSDF
+  - This pywincalc version has improved calculation of integrated spectral averages for shading layers with BSDF
 
 0.0.6
 
