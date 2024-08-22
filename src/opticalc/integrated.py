@@ -41,7 +41,7 @@ def calc_optical(glazing_system: pywincalc.GlazingSystem, method_name: str) -> O
     except Exception as e:
         err_message = (f"could not create a "
                        f"pywincalc results object "
-                       f"with method_name: {method_name}")
+                       f"with method_name: {method_name} : {str(e)}")
         logger.exception(f"calc_optical() {err_message}")
         raise Exception(err_message) from e
 
@@ -400,8 +400,8 @@ def generate_integrated_spectral_averages_summary(product: BaseProduct,
                 results: OpticalStandardMethodResults = calc_optical(glazing_system, method_name)
                 setattr(summary_results, method_name.lower(), results)
             except Exception as e:
-                error_msg = f"calc_optical() call failed for method {method_name}"
-                logger.error(f"OptiCalc : {error_msg} : {e}")
+                error_msg = f"calc_optical() call failed for method {method_name} : {e}"
+                logger.error(f"OptiCalc : {error_msg} ")
                 raise SpectralAveragesSummaryCalculationException(error_msg) from e
         else:
             logger.warning(f"generate_integrated_spectral_averages_summary() skipping method {method_name} as its not "
