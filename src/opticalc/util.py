@@ -2,82 +2,129 @@ import logging
 from typing import List, Dict, Optional
 
 import pywincalc
-from py_igsdb_base_data.optical import TrichromaticResult, LabResult, RGBResult, OpticalData
+from py_igsdb_base_data.optical import (
+    TrichromaticResult,
+    LabResult,
+    RGBResult,
+    OpticalData,
+)
 from py_igsdb_base_data.product import ProductSubtype
 
 logger = logging.getLogger(__name__)
 
 
-def convert_wavelength_data(raw_wavelength_data: List[Dict], use_diffuse_as_specular: bool = False) -> List[
-    pywincalc.WavelengthData]:
+def convert_wavelength_data(
+    raw_wavelength_data: List[Dict],
+    use_diffuse_as_specular: bool = False,
+    combine_diffuse_and_specular: bool = False,
+) -> List[pywincalc.WavelengthData]:
     """
     Converts a list of wavelength data objects into a form that can be used in Pywincalc.
 
     IMPORTANT: raw wavelength data must be in microns.
 
     TODO: The LBNL team is current discussing how to handle wavelength data with both specular and diffuse values.
-
     TODO: Add check for microns. Look at first value.
 
     Args:
 
-        raw_wavelength_data:        A list of dictionaries in the shape of (but not necessarily
-                                    actual instances of) py_igsdb_base_data.optical.WavelengthMeasurementSet.
-                                    Must be in microns.
-        use_diffuse_as_specular:    If True, the diffuse component will be used as the specular component.
-                                    This is a temporary workaround for the fact that pywincalc cannot
-                                    yet calculate both specular and diffuse components.
+        raw_wavelength_data:            A list of dictionaries in the shape of (but not necessarily
+                                        actual instances of) py_igsdb_base_data.optical.WavelengthMeasurementSet.
+                                        Must be in microns.
+
+        use_diffuse_as_specular:        If True, the diffuse component will be used as the specular component.
+                                        This is a temporary workaround for the fact that pywincalc does not yet
+                                        support diffuse components.
+                                        Set this to True when using e.g. a shade material imported into the IGSDB
+                                        from the CGDB...in this case there will only be a 'diffuse' set of measurements.
+
+        combine_diffuse_and_specular:   If True, the diffuse and specular components will be combined into a single
+                                        specular component. This is a temporary workaround for the fact that pywincalc
+                                        does not yet support diffuse components.
+                                        Set this to True when creating wavelength data for a product that has both
+                                        diffuse and specular measurements.
+
 
     Returns:
         A list of pywincalc.OpticalMeasurementComponent instances.
 
     """
+
+    if use_diffuse_as_specular and combine_diffuse_and_specular:
+        raise ValueError(
+            "Cannot use both 'use_diffuse_as_specular' and 'combine_diffuse_and_specular'"
+        )
+
     pywincalc_wavelength_measured_data = []
     for individual_wavelength_measurement in raw_wavelength_data:
-
         wavelength = individual_wavelength_measurement.get("w", None)
         if not wavelength:
-            raise Exception(f"Missing wavelength property 'w' in {individual_wavelength_measurement}")
+            raise Exception(
+                f"Missing wavelength property 'w' in {individual_wavelength_measurement}"
+            )
+        if wavelength < 0:
+            raise Exception(
+                f"Wavelength value must be positive: {individual_wavelength_measurement}"
+            )
 
         wavelength = float(wavelength)
 
-        if use_diffuse_as_specular:
-            measurements = individual_wavelength_measurement.get("diffuse", None)
+        if use_diffuse_as_specular or combine_diffuse_and_specular:
+            diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
+            if not diffuse_measurements:
+                if use_diffuse_as_specular:
+                    raise Exception(
+                        f"Missing 'diffuse' property in {individual_wavelength_measurement} but 'use_diffuse_as_specular' is True"
+                    )
+                elif combine_diffuse_and_specular:
+                    raise Exception(
+                        f"Missing 'diffuse' property in {individual_wavelength_measurement} but 'combine_diffuse_and_specular' is True"
+                    )
         else:
-            measurements = individual_wavelength_measurement.get("specular", None)
+            specular_measurements = individual_wavelength_measurement.get(
+                "specular", {}
+            )
+            if not specular_measurements and not use_diffuse_as_specular:
+                raise Exception(
+                    f"Missing 'specular' property in {individual_wavelength_measurement}"
+                )
 
-        if not measurements:
-            if use_diffuse_as_specular:
-                raise Exception(f"Missing 'diffuse' property in {individual_wavelength_measurement}")
-            else:
-                raise Exception(f"Missing 'specular' property in {individual_wavelength_measurement}")
+        if use_diffuse_as_specular:
+            specular_measurements = diffuse_measurements
 
-        direct_component = pywincalc.OpticalMeasurementComponent(
-            float(measurements['tf']),
-            float(measurements["tb"]),
-            float(measurements["rf"]),
-            float(measurements["rb"]))
+        if combine_diffuse_and_specular:
+            pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
+                float(specular_measurements.get("tf", 0))
+                + float(diffuse_measurements.get("tf", 0)),
+                float(specular_measurements.get("tb", 0))
+                + float(diffuse_measurements.get("tb", 0)),
+                float(specular_measurements.get("rf", 0))
+                + float(diffuse_measurements.get("rf", 0)),
+                float(specular_measurements.get("rb", 0))
+                + float(diffuse_measurements.get("rb", 0)),
+            )
+        else:
+            pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
+                float(specular_measurements.get("tf", 0)),
+                float(specular_measurements.get("tb", 0)),
+                float(specular_measurements.get("rf", 0)),
+                float(specular_measurements.get("rb", 0)),
+            )
 
-        diffuse_component = None
-        if not use_diffuse_as_specular:
-            diffuse_measurements = individual_wavelength_measurement.get("diffuse", None)
-            if diffuse_measurements:
-                diffuse_component = pywincalc.OpticalMeasurementComponent(
-                    float(diffuse_measurements['tf']),
-                    float(diffuse_measurements["tb"]),
-                    float(diffuse_measurements["rf"]),
-                    float(diffuse_measurements["rb"]))
+        # Pywincalc does not yet support diffuse components
+        pywincalc_diffuse_component = None
 
         try:
-            if diffuse_component:
-                if not direct_component:
-                    raise Exception("Cannot have diffuse component without direct component")
-                wd = pywincalc.WavelengthData(wavelength, direct_component, diffuse_component)
-                pywincalc_wavelength_measured_data.append(wd)
-            else:
-                pywincalc_wavelength_measured_data.append(pywincalc.WavelengthData(wavelength, direct_component))
+            wd = pywincalc.WavelengthData(
+                wavelength,
+                pywincalc_direct_component,
+                pywincalc_diffuse_component,
+            )
+            pywincalc_wavelength_measured_data.append(wd)
         except Exception as e:
-            raise Exception(f"cannot convert wavelength data to pywincalc WavelengthData type: {e}") from e
+            raise Exception(
+                f"cannot convert wavelength data to pywincalc WavelengthData type: {e}"
+            ) from e
 
     return pywincalc_wavelength_measured_data
 
@@ -146,7 +193,7 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
         "BACK": pywincalc.CoatedSide.BACK,
         "BOTH": pywincalc.CoatedSide.BOTH,
         "NEITHER": pywincalc.CoatedSide.NEITHER,
-        "NA": pywincalc.CoatedSide.NEITHER
+        "NA": pywincalc.CoatedSide.NEITHER,
     }
     try:
         return mapping.get(coated_side)
@@ -154,7 +201,9 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
         raise Exception(f"Unsupported coated side: {coated_side}")
 
 
-def convert_product(product, use_diffuse_as_specular: bool = False) -> pywincalc.ProductDataOpticalAndThermal:
+def convert_product(
+    product, use_diffuse_as_specular: bool = False
+) -> pywincalc.ProductDataOpticalAndThermal:
     """
     Converts a product.Product dataclass instance into a
     dataclass instance that PyWinCalc can work with.
@@ -186,7 +235,9 @@ def convert_product(product, use_diffuse_as_specular: bool = False) -> pywincalc
     if not product:
         raise ValueError("No product provided")
 
-    optical_data: OpticalData = product.physical_properties.optical_properties.optical_data
+    optical_data: OpticalData = (
+        product.physical_properties.optical_properties.optical_data
+    )
     if not optical_data:
         raise Exception(f"No optical_data is defined on product: {product}")
 
@@ -198,7 +249,9 @@ def convert_product(product, use_diffuse_as_specular: bool = False) -> pywincalc
         raise Exception("Could not find wavelength data in product : {product}") from e
 
     try:
-        wavelength_data = convert_wavelength_data(wavelength_data, use_diffuse_as_specular=use_diffuse_as_specular)
+        wavelength_data = convert_wavelength_data(
+            wavelength_data, use_diffuse_as_specular=use_diffuse_as_specular
+        )
     except Exception as e:
         logger.exception(f"Could not convert wavelength data : {e}")
         raise e
@@ -227,14 +280,16 @@ def convert_product(product, use_diffuse_as_specular: bool = False) -> pywincalc
 
     coated_side = convert_coated_side(product.coated_side)
 
-    optical_data = pywincalc.ProductDataOpticalNBand(material_type,
-                                                     float(material_thickness),
-                                                     wavelength_data,
-                                                     coated_side,
-                                                     ir_transmittance_front,
-                                                     ir_transmittance_back,
-                                                     emissivity_front,
-                                                     emissivity_back)
+    optical_data = pywincalc.ProductDataOpticalNBand(
+        material_type,
+        float(material_thickness),
+        wavelength_data,
+        coated_side,
+        ir_transmittance_front,
+        ir_transmittance_back,
+        emissivity_front,
+        emissivity_back,
+    )
 
     layer = pywincalc.ProductDataOpticalAndThermal(optical_data, None)
     return layer
@@ -244,9 +299,9 @@ def convert_to_trichromatic_result(trichromatic) -> Optional[TrichromaticResult]
     """
     Converts a pywincalc.TrichromaticResult instance into
     a py_igsdb_base_data.optical.TrichromaticResult instance.
-    
+
     If None is provided, None is returned.
-    
+
     """
     if not trichromatic:
         return None

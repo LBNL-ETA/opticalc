@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.26
+
+- Refactor convert_wavelength_data().
+
 0.0.25
 
 - Add method to get version of pywincalc used internally (e.g. for summary value calculation)
