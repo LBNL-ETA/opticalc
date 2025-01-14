@@ -1,10 +1,10 @@
 
 # required by library
-pydantic==2.8.2
+pydantic==2.10.5
 
 -e git+https://github.com/LBNL-ETA/py_igsdb_base_data@main#egg=py_igsdb_base_data
 
 pywincalc==3.3.1
 
 # Local
-pytest==8.3.1
+pytest==8.3.4
