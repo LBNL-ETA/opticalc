@@ -1,4 +1,7 @@
 # Release Notes
+0.0.27
+
+- Fix small bug in convert_wavelength_data().
 
 0.0.26
 
