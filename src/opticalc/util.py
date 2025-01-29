@@ -44,6 +44,22 @@ def convert_wavelength_data(
                                         Set this to True when creating wavelength data for a product that has both
                                         diffuse and specular measurements.
 
+    Note:
+
+    The use_diffuse_as_specular and combine_diffuse_and_specular flags are present to get around the fact that
+    pywincalc currently cannot handle the diffuse portion of wavelength measurements.
+
+    The `combine_diffuse_and_specular` flag is probably more intuitive, since it just combines the diffuse and specular
+    measurements into a single specular measurement for each wavelength before calling pywincalc.
+
+    A user might do this when e.g. building a shade material wavelength data with both dir and dif data as a layer
+    for a venetian blind.
+
+    The `use_diffuse_as_specular` flag is useful when the user wants to construct summary values for a product
+    with eight columns of measured data, such as a shade material submitted to the Checkertool with this amount of data.
+    In this case, a caller like Checkertool will call this method twice, once with `use_diffuse_as_specular=True`,
+    and then again with `use_diffuse_as_specular=False`. The results will be combined into a single summay values
+    object that has both specular and diffuse components.
 
     Returns:
         A list of pywincalc.OpticalMeasurementComponent instances.
@@ -69,23 +85,7 @@ def convert_wavelength_data(
             )
 
         specular_measurements = individual_wavelength_measurement.get("specular", {})
-        if use_diffuse_as_specular or combine_diffuse_and_specular:
-            diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
-            if not diffuse_measurements:
-                if use_diffuse_as_specular:
-                    raise Exception(
-                        f"Missing 'diffuse' property in {individual_wavelength_measurement} but 'use_diffuse_as_specular' is True"
-                    )
-                elif combine_diffuse_and_specular:
-                    raise Exception(
-                        f"Missing 'diffuse' property in {individual_wavelength_measurement} but 'combine_diffuse_and_specular' is True"
-                    )
-        else:
-            if not specular_measurements and not use_diffuse_as_specular:
-                raise Exception(
-                    f"Missing 'specular' property in {individual_wavelength_measurement}"
-                )
-
+        diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
         if use_diffuse_as_specular:
             specular_measurements = diffuse_measurements
 
@@ -108,14 +108,11 @@ def convert_wavelength_data(
                 float(specular_measurements.get("rb", 0)),
             )
 
-        # Pywincalc does not yet support diffuse components
-        pywincalc_diffuse_component = None
-
         try:
             wd = pywincalc.WavelengthData(
                 wavelength,
                 pywincalc_direct_component,
-                pywincalc_diffuse_component,
+                None,  # Pywincalc does not yet support diffuse components
             )
             pywincalc_wavelength_measured_data.append(wd)
         except Exception as e:
