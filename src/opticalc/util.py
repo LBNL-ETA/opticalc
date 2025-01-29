@@ -62,12 +62,11 @@ def convert_wavelength_data(
             raise Exception(
                 f"Missing wavelength property 'w' in {individual_wavelength_measurement}"
             )
+        wavelength = float(wavelength)
         if wavelength < 0:
             raise Exception(
                 f"Wavelength value must be positive: {individual_wavelength_measurement}"
             )
-
-        wavelength = float(wavelength)
 
         if use_diffuse_as_specular or combine_diffuse_and_specular:
             diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
