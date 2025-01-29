@@ -68,6 +68,7 @@ def convert_wavelength_data(
                 f"Wavelength value must be positive: {individual_wavelength_measurement}"
             )
 
+        specular_measurements = individual_wavelength_measurement.get("specular", {})
         if use_diffuse_as_specular or combine_diffuse_and_specular:
             diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
             if not diffuse_measurements:
@@ -80,9 +81,6 @@ def convert_wavelength_data(
                         f"Missing 'diffuse' property in {individual_wavelength_measurement} but 'combine_diffuse_and_specular' is True"
                     )
         else:
-            specular_measurements = individual_wavelength_measurement.get(
-                "specular", {}
-            )
             if not specular_measurements and not use_diffuse_as_specular:
                 raise Exception(
                     f"Missing 'specular' property in {individual_wavelength_measurement}"
