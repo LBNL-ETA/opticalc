@@ -42,9 +42,9 @@
   "integrated_spectral_averages_summaries": [],
   "warnings": [],
   "extra_data": {},
-  "geometric_properties": null,
   "physical_properties": {
     "thickness": "4.85",
+    "geometric_properties": null,
     "predefined_tir_front": null,
     "predefined_tir_back": null,
     "predefined_emissivity_front": "0.84",
