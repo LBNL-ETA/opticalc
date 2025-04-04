@@ -93,35 +93,24 @@ def convert_wavelength_data(
             )
             diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
 
-        # Convert values
-        for key in specular_measurements:
-            if specular_measurements[key] == "":
-                specular_measurements[key] = None
-            if specular_measurements[key]:
-                specular_measurements[key] = float(specular_measurements[key])
-        for key in diffuse_measurements:
-            if diffuse_measurements[key] == "":
-                diffuse_measurements[key] = None
-            if diffuse_measurements[key]:
-                diffuse_measurements[key] = float(diffuse_measurements[key])
+        for measurements in (specular_measurements, diffuse_measurements):
+            for key, value in measurements.items():
+                measurements[key] = convert_measurement_value(value)
 
+        # Build the pywincalc component
         if combine_diffuse_and_specular:
             pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
-                float(specular_measurements.get("tf", 0))
-                + float(diffuse_measurements.get("tf", 0)),
-                float(specular_measurements.get("tb", 0))
-                + float(diffuse_measurements.get("tb", 0)),
-                float(specular_measurements.get("rf", 0))
-                + float(diffuse_measurements.get("rf", 0)),
-                float(specular_measurements.get("rb", 0))
-                + float(diffuse_measurements.get("rb", 0)),
+                specular_measurements.get("tf", 0) + diffuse_measurements.get("tf", 0),
+                specular_measurements.get("tb", 0) + diffuse_measurements.get("tb", 0),
+                specular_measurements.get("rf", 0) + diffuse_measurements.get("rf", 0),
+                specular_measurements.get("rb", 0) + diffuse_measurements.get("rb", 0),
             )
         else:
             pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
-                float(specular_measurements.get("tf", 0)),
-                float(specular_measurements.get("tb", 0)),
-                float(specular_measurements.get("rf", 0)),
-                float(specular_measurements.get("rb", 0)),
+                specular_measurements.get("tf", 0),
+                specular_measurements.get("tb", 0),
+                specular_measurements.get("rf", 0),
+                specular_measurements.get("rb", 0),
             )
 
         try:
@@ -205,10 +194,10 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
         "NEITHER": pywincalc.CoatedSide.NEITHER,
         "NA": pywincalc.CoatedSide.NEITHER,
     }
-    try:
-        return mapping.get(coated_side)
-    except KeyError:
+    mapped_coated_side = mapping.get(coated_side)
+    if mapped_coated_side is None:
         raise Exception(f"Unsupported coated side: {coated_side}")
+    return mapped_coated_side
 
 
 def convert_product(
@@ -259,7 +248,7 @@ def convert_product(
         raise Exception("Could not find wavelength data in product : {product}") from e
 
     try:
-        wavelength_data = convert_wavelength_data(
+        wavelength_data = convert_wavelength_measurement_value(
             wavelength_data, use_diffuse_as_specular=use_diffuse_as_specular
         )
     except Exception as e:
@@ -336,3 +325,12 @@ def convert_to_rgb_result(rgb) -> Optional[RGBResult]:
     if not rgb:
         return None
     return RGBResult(r=rgb.R, g=rgb.G, b=rgb.B)
+
+
+# Convert values
+def convert_wavelength_measurement_value(value):
+    if value in ("", None):
+        return 0
+    if isinstance(value, str):
+        return float(value)
+    return value
