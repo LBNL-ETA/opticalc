@@ -3,6 +3,7 @@
 0.0.28
 
 - Convert empty strings in measured data to None before reading and converting to Float.
+- Improve logic in convert_wavelength_data
 
 0.0.27
 

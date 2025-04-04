@@ -84,8 +84,14 @@ def convert_wavelength_data(
                 f"Wavelength value must be positive: {individual_wavelength_measurement}"
             )
 
-        specular_measurements = individual_wavelength_measurement.get("specular", {})
-        diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
+        if use_diffuse_as_specular:
+            specular_measurements = individual_wavelength_measurement.get("diffuse", {})
+            diffuse_measurements = {}
+        else:
+            specular_measurements = individual_wavelength_measurement.get(
+                "specular", {}
+            )
+            diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
 
         # Make sure empty strings are converted to None
         for key in specular_measurements:
@@ -94,9 +100,6 @@ def convert_wavelength_data(
         for key in diffuse_measurements:
             if diffuse_measurements[key] == "":
                 diffuse_measurements[key] = None
-
-        if use_diffuse_as_specular:
-            specular_measurements = diffuse_measurements
 
         if combine_diffuse_and_specular:
             pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
