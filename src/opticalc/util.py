@@ -86,6 +86,15 @@ def convert_wavelength_data(
 
         specular_measurements = individual_wavelength_measurement.get("specular", {})
         diffuse_measurements = individual_wavelength_measurement.get("diffuse", {})
+
+        # Make sure empty strings are converted to None
+        for key in specular_measurements:
+            if specular_measurements[key] == "":
+                specular_measurements[key] = None
+        for key in diffuse_measurements:
+            if diffuse_measurements[key] == "":
+                diffuse_measurements[key] = None
+
         if use_diffuse_as_specular:
             specular_measurements = diffuse_measurements
 

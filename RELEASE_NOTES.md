@@ -1,4 +1,9 @@
 # Release Notes
+
+0.0.28
+
+- Convert empty strings in measured data to None before reading and converting to Float.
+
 0.0.27
 
 - Fix small bug in convert_wavelength_data().
