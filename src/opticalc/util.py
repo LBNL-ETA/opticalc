@@ -95,7 +95,7 @@ def convert_wavelength_data(
 
         for measurements in (specular_measurements, diffuse_measurements):
             for key, value in measurements.items():
-                measurements[key] = convert_measurement_value(value)
+                measurements[key] = convert_wavelength_measurement_value(value)
 
         # Build the pywincalc component
         if combine_diffuse_and_specular:
