@@ -100,8 +100,8 @@ def convert_wavelength_data(
             if specular_measurements[key]:
                 specular_measurements[key] = float(specular_measurements[key])
         for key in diffuse_measurements:
-            if diffuse_measurements[key] == "" or diffuse_measurements[key] is None:
-                diffuse_measurements[key] = 0
+            if diffuse_measurements[key] == "":
+                diffuse_measurements[key] = None
             if diffuse_measurements[key]:
                 diffuse_measurements[key] = float(diffuse_measurements[key])
 
