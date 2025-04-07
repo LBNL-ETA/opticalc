@@ -17,6 +17,7 @@ def convert_wavelength_data(
     raw_wavelength_data: List[Dict],
     use_diffuse_as_specular: bool = False,
     combine_diffuse_and_specular: bool = False,
+    convert_null_to_zero: bool = False,
 ) -> List[pywincalc.WavelengthData]:
     """
     Converts a list of wavelength data objects into a form that can be used in Pywincalc.
@@ -43,6 +44,9 @@ def convert_wavelength_data(
                                         does not yet support diffuse components.
                                         Set this to True when creating wavelength data for a product that has both
                                         diffuse and specular measurements.
+
+        convert_null_to_zero:           If True, null values will be converted to zero.
+                                        Otherwise, an exception will be raised if a null value is found.
 
     Note:
 
@@ -201,7 +205,8 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
 
 
 def convert_product(
-    product, use_diffuse_as_specular: bool = False
+    product,
+    use_diffuse_as_specular: bool = False,
 ) -> pywincalc.ProductDataOpticalAndThermal:
     """
     Converts a product.Product dataclass instance into a
@@ -248,8 +253,9 @@ def convert_product(
         raise Exception("Could not find wavelength data in product : {product}") from e
 
     try:
-        wavelength_data = convert_wavelength_measurement_value(
-            wavelength_data, use_diffuse_as_specular=use_diffuse_as_specular
+        wavelength_data = convert_wavelength_data(
+            raw_wavelength_data=wavelength_data,
+            use_diffuse_as_specular=use_diffuse_as_specular,
         )
     except Exception as e:
         logger.exception(f"Could not convert wavelength data : {e}")
@@ -328,9 +334,35 @@ def convert_to_rgb_result(rgb) -> Optional[RGBResult]:
 
 
 # Convert values
-def convert_wavelength_measurement_value(value):
+def convert_wavelength_measurement_value(value, convert_null_to_zero: bool = False):
+    """
+    Converts a wavelength measurement value into a float.
+    If the value is None or an empty string, a ValueError will be raised
+    unless convert_null_to_zero is True, in which case the value will be
+    converted to zero.
+    If the value cannot be converted to a float, an Exception will be raised.
+
+    Args:
+        value (_type_): _description_
+        convert_null_to_zero (bool, optional): _description_. Defaults to False.
+
+    Raises:
+        ValueError: If the value is None or an empty string and convert_null_to_zero is False.
+        Exception: If the value is not a string or float.
+
+    Returns:
+        Float value of the wavelength measurement.
+    """
     if value in ("", None):
-        return 0
+        if convert_null_to_zero:
+            return 0
+        else:
+            raise ValueError("Measured value is null or empty")
     if isinstance(value, str):
-        return float(value)
+        try:
+            return float(value)
+        except Exception as e:
+            raise Exception(
+                f"Cannot convert wavelength measurement value '{value}' to float"
+            ) from e
     return value
