@@ -38,8 +38,8 @@ class TestDataclass(TestCase):
         expected_subtype = original_dict['subtype']
 
         # Check dataclass against original properties.
-        self.assertEquals(product.subtype, expected_subtype)
+        self.assertEqual(product.subtype, expected_subtype)
 
         physical_properties = product.physical_properties
         # Makes sure nested data was transformed to dataclasses by dataclasses-json
-        self.assertEquals(type(physical_properties), PhysicalProperties)
+        self.assertEqual(type(physical_properties), PhysicalProperties)

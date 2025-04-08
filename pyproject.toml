@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opticalc"
+version = "0.0.29"
+description = ""
+dependencies = [
+    "pydantic>=2.8.2",
+    "py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
+    "pywincalc==v3.3.1",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]
