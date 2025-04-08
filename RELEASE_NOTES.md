@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.29
+
+- Improve handling of spectral data when combining specular and diffuse.
+
 0.0.28
 
 - Convert empty strings in measured data to None before reading and converting to Float.
