@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.30
+
+- Update to new 'NOT_APPLICABLE' value for coated side.
+
 0.0.29
 
 - Improve handling of spectral data when combining specular and diffuse.
