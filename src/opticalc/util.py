@@ -199,7 +199,7 @@ def convert_coated_side(coated_side: str) -> pywincalc.CoatedSide:
         "BACK": pywincalc.CoatedSide.BACK,
         "BOTH": pywincalc.CoatedSide.BOTH,
         "NEITHER": pywincalc.CoatedSide.NEITHER,
-        "NA": pywincalc.CoatedSide.NEITHER,
+        "NOT_APPLICABLE": pywincalc.CoatedSide.NEITHER,
     }
     mapped_coated_side = mapping.get(coated_side)
     if mapped_coated_side is None:

@@ -65,7 +65,7 @@ class TestUtil(TestCase):
         result = convert_coated_side(coated_side)
         self.assertEqual(expected_output, result)
 
-        coated_side = "NA"
+        coated_side = "NOT_APPLICABLE"
         expected_output = pywincalc.CoatedSide.NEITHER
         result = convert_coated_side(coated_side)
         self.assertEqual(expected_output, result)
