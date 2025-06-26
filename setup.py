@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="opticalc",
-    version="0.0.30",
+    version="0.0.31",
     long_description="",
     # tell setuptools to look for any packages under 'src'
     packages=find_packages(where="src"),

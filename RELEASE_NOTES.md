@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.31
+
+- Bump for py_igsdb_base_data update.
+
 0.0.30
 
 - Update to new 'NOT_APPLICABLE' value for coated side.
