@@ -4,7 +4,7 @@ pydantic==2.10.5
 
 -e git+https://github.com/LBNL-ETA/py_igsdb_base_data@main#egg=py_igsdb_base_data
 
-pywincalc==3.7.2
+pywincalc==3.3.1
 
 # Local
 pytest==8.3.4
