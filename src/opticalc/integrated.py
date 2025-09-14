@@ -512,11 +512,13 @@ def generate_integrated_spectral_averages_summary(
 
     # Convert product from a BaseData object into a format that pywincalc understands.
     pywincalc_layer: pywincalc.ProductDataOpticalAndThermal = convert_product(
-        product, use_diffuse_as_specular=use_diffuse_as_specular
+        product,
+        use_diffuse_as_specular=use_diffuse_as_specular,
     )
 
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(
-        optical_standard=optical_standard, solid_layers=[pywincalc_layer]
+        optical_standard=optical_standard,
+        solid_layers=[pywincalc_layer],
     )
 
     # Iterate through optical methods and add the calculated results to the

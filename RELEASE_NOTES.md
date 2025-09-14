@@ -1,5 +1,8 @@
 # Release Notes
 
+0.0.32
+- Update pywincalc to 3.7.2
+
 0.0.31
 
 - Bump for py_igsdb_base_data update.
