@@ -516,9 +516,16 @@ def generate_integrated_spectral_averages_summary(
         use_diffuse_as_specular=use_diffuse_as_specular,
     )
 
+    bsdf_hemisphere: pywincalc.BSDFHemisphere | None = None
+    if not product.physical_properties.is_specular:
+        # Starting in Pywincalc 3.7.2, we must include a BSDF Hemisphere
+        # when creating a glazing system if there is diffuse measured values.
+        bsdf_hemisphere = pywincalc.BSDFHemisphere.create(pywincalc.BSDFBasisType.FULL)
+
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(
         optical_standard=optical_standard,
         solid_layers=[pywincalc_layer],
+        bsdf_hemisphere=bsdf_hemisphere,
     )
 
     # Iterate through optical methods and add the calculated results to the
