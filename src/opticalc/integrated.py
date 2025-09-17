@@ -466,7 +466,7 @@ def calc_thermal_ir_results(
 def generate_integrated_spectral_averages_summary(
     product: BaseProduct,
     optical_standard: pywincalc.OpticalStandard,
-    use_diffuse_as_specular: bool = False,
+    use_diffuse_as_specular: bool = False,  # DEPRECATED - see note below
 ) -> IntegratedSpectralAveragesSummaryValues:
     """
     Uses pywincalc to generate an integrated spectral averages summary for a given product
@@ -474,16 +474,23 @@ def generate_integrated_spectral_averages_summary(
 
     Note: some optical calculation methods may be skipped if the optical_standard passed in does not support them.
 
-    This method provides a 'use_diffuse_as_specular' argument to allow the user to
-    use diffuse measurements in the wavelength data in place of specular measurements.
+    NOTE: use_diffuse_as_specular is DEPRECATED but not yet removed.
 
-    This is a temporary workaround for the fact that pywincalc cannot yet calculate both
-    specular and diffuse components. In the meantime, it's expected Checkertool will run two calculations,
-    one with specular and one with diffuse-as-specular, and then combine those into a single
-    result with specular and diffuse components.
+        Background:
 
-    If the use_diffuse_as_specular arg is False, the standard procedure will be to use both
-    the specular and diffuse measurements if they are present, otherwise only use specular.
+        This method provided a 'use_diffuse_as_specular' argument to allow the user to
+        use diffuse measurements in the wavelength data in place of specular measurements.
+
+        This was a temporary workaround for the fact that pywincalc could not yet calculate both
+        specular and diffuse components. In the meantime, it was expected Checkertool would run two calculations,
+        one with specular and one with diffuse-as-specular, and then combine those into a single
+        result with specular and diffuse components.
+
+        If the use_diffuse_as_specular arg is False, the standard procedure will be to use both
+        the specular and diffuse measurements if they are present, otherwise only use specular.
+
+        As of pywincalc 3.7.2, pywincalc can now handle both specular and diffuse components,
+        so this workaround is no longer needed.
 
     Args:
         product:                    Instance of a py_igsdb_base_data BaseProduct dataclass.
