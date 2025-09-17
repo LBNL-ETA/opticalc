@@ -512,6 +512,12 @@ def generate_integrated_spectral_averages_summary(
     if not optical_standard:
         raise ValueError("optical_standard is None")
 
+    if use_diffuse_as_specular:
+        logger.warning(
+            "The use_diffuse_as_specular argument to generate_integrated_spectral_averages_summary() is "
+            "deprecated and will be removed in a future release. See the docstring for details."
+        )
+
     # Create an empty summary_results instance. We'll populate it below and then return it.
     summary_results: IntegratedSpectralAveragesSummaryValues = (
         IntegratedSpectralAveragesSummaryValuesFactory.create()
