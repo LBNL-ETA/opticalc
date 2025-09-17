@@ -12,7 +12,7 @@ setup(
     install_requires=[
         "pydantic>=2.8.2",
         "py_igsdb_base_data@git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
-        "pywincalc==v3.7.2",
+        "pywincalc==3.7.2",
     ],
     test_suite="tests",
     zip_safe=False,

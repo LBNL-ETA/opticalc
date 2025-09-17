@@ -566,13 +566,14 @@ def generate_integrated_spectral_averages_summary(
     for method_name in optical_methods:
         if method_name in optical_standard.methods:
             try:
+                logger.info(f"Calculating optical method {method_name}")
                 results: OpticalStandardMethodResults = calc_optical(
                     glazing_system, method_name
                 )
                 setattr(summary_results, method_name.lower(), results)
             except Exception as e:
                 error_msg = f"calc_optical() call failed for method {method_name} : {e}"
-                logger.error(f"OptiCalc : {error_msg} ")
+                logger.exception(f"OptiCalc : {error_msg} ", exc_info=e)
                 raise SpectralAveragesSummaryCalculationException(error_msg) from e
         else:
             logger.warning(
@@ -583,6 +584,7 @@ def generate_integrated_spectral_averages_summary(
 
     # Add color results to summary_results
     try:
+        logger.info("Calculating color results")
         summary_results.color = calc_color(glazing_system)
     except Exception as e:
         error_msg = (
@@ -601,6 +603,7 @@ def generate_integrated_spectral_averages_summary(
     # Add thermal IR results to summary_results
     # Per meeting in late Jan 2024, we will ignore emissivity for SHADE_MATERIAL subtype products.
     # We only want to refer to header value emissivity for products of this subtype.
+    logger.info("Calculating thermal IR results")
     ignore_emissivity = product.subtype == ProductSubtype.SHADE_MATERIAL.name
     try:
         summary_results.thermal_ir = calc_thermal_ir_results(
@@ -612,7 +615,7 @@ def generate_integrated_spectral_averages_summary(
             f"layer: {pywincalc_layer} "
             f"optical_standard: {optical_standard} "
         )
-        logger.error(f"OptiCalc : {error_msg} : {e}")
+        logger.exception(f"OptiCalc : {error_msg} ", exc_info=e)
         raise SpectralAveragesSummaryCalculationException(error_msg) from e
 
     return summary_results
