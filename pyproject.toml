@@ -9,7 +9,7 @@ description = ""
 dependencies = [
     "pydantic>=2.8.2",
     "py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
-    "pywincalc==3.7.3",
+    "pywincalc>=3.3.1",
 ]
 
 [tool.setuptools]
