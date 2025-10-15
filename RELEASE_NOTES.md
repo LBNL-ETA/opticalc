@@ -1,5 +1,8 @@
 # Release Notes
 
+0.0.33
+- Update pywincalc to 3.7.3
+
 0.0.32
 - Update pywincalc to 3.7.2
 
