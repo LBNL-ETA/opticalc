@@ -18,12 +18,13 @@ def convert_wavelength_data(
     use_diffuse_as_specular: bool = False,
     combine_diffuse_and_specular: bool = False,
     convert_null_or_empty_to_zero: bool = False,
+    is_specular: bool = False,
 ) -> List[pywincalc.WavelengthData]:
     """
     Converts a list of wavelength data objects into a form that can be used in Pywincalc.
 
     IMPORTANT: raw wavelength data must be in microns.
-    
+
     We expect raw_wavelength_data to be a list of dictionaries in the shape of py_igsdb_base_data.optical.WavelengthMeasurementSet,
     as follows:
 
@@ -45,7 +46,7 @@ def convert_wavelength_data(
         },
         ...
     ]
-    
+
     Args:
 
         raw_wavelength_data:            A list of dictionaries in the shape of (but not necessarily
@@ -67,12 +68,16 @@ def convert_wavelength_data(
         convert_null_or_empty_to_zero:  If True, null values will be converted to zero.
                                         Otherwise, an exception will be raised if a null value is found.
 
+        is_specular:                    If True, indicates that the product is fully specular.
+                                        In this case, we will remove zeroes from diffuse components to avoid
+                                        pywincalc 3.7.3 BSDF requirement error.
+
     Note:
 
-    
+
     IMPORTANT: Pywincalc 3.7.2 now supports diffuse components, so the use_diffuse_as_specular
     and combine_diffuse_and_specular flags are deprecated and will be removed in a future release
-    
+
     The use_diffuse_as_specular and combine_diffuse_and_specular flags were added to get around the fact that
     older versions of pywincalc could not handle the diffuse portion of wavelength measurements.
 
@@ -143,6 +148,7 @@ def convert_wavelength_data(
                 )
 
         # Build the pywincalc component
+        pywincalc_diffuse_component = None
         if combine_diffuse_and_specular:
             pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
                 specular_measurements.get("tf", 0) + diffuse_measurements.get("tf", 0),
@@ -150,7 +156,6 @@ def convert_wavelength_data(
                 specular_measurements.get("rf", 0) + diffuse_measurements.get("rf", 0),
                 specular_measurements.get("rb", 0) + diffuse_measurements.get("rb", 0),
             )
-            pywincalc_diffuse_component = None
         else:
             pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
                 specular_measurements.get("tf", 0),
@@ -158,12 +163,18 @@ def convert_wavelength_data(
                 specular_measurements.get("rf", 0),
                 specular_measurements.get("rb", 0),
             )
-            pywincalc_diffuse_component = pywincalc.OpticalMeasurementComponent(
-                diffuse_measurements.get("tf", 0),
-                diffuse_measurements.get("tb", 0),
-                diffuse_measurements.get("rf", 0),
-                diffuse_measurements.get("rb", 0),
-            )
+            # Only define diffuse component if this is a non-specular component.
+            # Pywincalc can't handle diffuse values for specular components, even if they're all zeroes.
+            # If it sees anything it will require a BSDF Hemisphere to be provided,
+            # which is not used for specular products and therefore causes an error.
+            # So we skip defining diffuse component when the component is specular.
+            if not is_specular:
+                pywincalc_diffuse_component = pywincalc.OpticalMeasurementComponent(
+                    diffuse_measurements.get("tf", 0),
+                    diffuse_measurements.get("tb", 0),
+                    diffuse_measurements.get("rf", 0),
+                    diffuse_measurements.get("rb", 0),
+                )
 
         try:
             wd = pywincalc.WavelengthData(
@@ -300,10 +311,17 @@ def convert_product(
     except Exception as e:
         raise Exception("Could not find wavelength data in product : {product}") from e
 
+    # NOTE: There is a bug in pywincalc 3.7.3 where it requires
+    # a BSDF Hemisphere to be provided even when the product is
+    # specular and all diffuse values are zero. We have to manually set
+    # all diffuse values to None to avoid this.
+    is_specular: bool = product.physical_properties.is_specular
+
     try:
         wavelength_data = convert_wavelength_data(
             raw_wavelength_data=wavelength_data,
             use_diffuse_as_specular=use_diffuse_as_specular,
+            is_specular=is_specular,
         )
     except Exception as e:
         logger.exception(f"Could not convert wavelength data : {e}")

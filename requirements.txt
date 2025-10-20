@@ -1,11 +1,18 @@
 
-# required by library
-pydantic==2.10.5
+# Use TestPyPI as the primary index so pywincalc>=3.7.3 resolves there; fall back to PyPI for everything else
 
--e git+https://github.com/LBNL-ETA/py_igsdb_base_data@main#egg=py_igsdb_base_data
+--index-url https://test.pypi.org/simple/ 
+--extra-index-url https://pypi.org
+
+
+# required by library
+#pydantic==2.10.5
+
+# Git dependency
+#py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main
 
 # Install pywincalc 3.7.3 or later from TestPyPI
-pywincalc --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org
+pywincalc>=3.7.3 
 
 # Local
-pytest==8.3.4
+#pytest==8.3.4

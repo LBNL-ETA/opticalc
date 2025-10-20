@@ -530,7 +530,9 @@ def generate_integrated_spectral_averages_summary(
     )
 
     bsdf_hemisphere: pywincalc.BSDFHemisphere | None = None
-    if not product.physical_properties.is_specular:
+    if product.physical_properties.is_specular:
+        bsdf_hemisphere = None
+    else:
         # Starting in Pywincalc 3.7.2, we must include a BSDF Hemisphere
         # when creating a glazing system if there is diffuse measured values.
         bsdf_hemisphere = pywincalc.BSDFHemisphere.create(pywincalc.BSDFBasisType.FULL)
