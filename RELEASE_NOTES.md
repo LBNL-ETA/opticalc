@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.35
+
+- Updated to test pywincalc 3.8.2
+
 0.0.34
 
 - Workaround for diffuse measurements to avoid BSDF hemisphere requirement bug in Pywincal 3.7.3

@@ -12,7 +12,7 @@
 #py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main
 
 # Install pywincalc 3.7.3 or later from TestPyPI
-pywincalc>=3.7.3 
+pywincalc>=3.8.2 --extra-index-url https://test.pypi.org/simple/
 
 # Local
 #pytest==8.3.4
