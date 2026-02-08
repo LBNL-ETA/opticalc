@@ -11,7 +11,7 @@ from py_igsdb_base_data.product import BaseProduct, PhysicalProperties
 
 @dataclass_json
 @dataclass
-class TestList:
+class SampleList:
     some_list: Optional[List[str]] = None
 
 
@@ -19,7 +19,7 @@ class TestDataclass(TestCase):
 
     def test_dataclass_library(self):
         d = '{"sports": ["soccer", "basketball"]}'
-        TestList.from_json(d)
+        SampleList.from_json(d)
 
     def test_load_valid_json_file(self):
         example_product_json = Path('tests/data/valid_monolithic_1.json')

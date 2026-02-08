@@ -25,7 +25,7 @@ from opticalc.util import (
 
 @dataclass_json
 @dataclass
-class TestList:
+class SampleList:
     some_list: Optional[List[str]] = None
 
 
