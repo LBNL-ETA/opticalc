@@ -309,7 +309,7 @@ def convert_product(
         if not wavelength_data:
             raise Exception("No wavelength data")
     except Exception as e:
-        raise Exception("Could not find wavelength data in product : {product}") from e
+        raise Exception(f"Could not find wavelength data in product: {product}") from e
 
     # NOTE: There is a bug in pywincalc 3.7.3 where it requires
     # a BSDF Hemisphere to be provided even when the product is

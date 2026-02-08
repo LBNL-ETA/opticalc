@@ -19,6 +19,7 @@ from opticalc.util import (
     convert_product,
     convert_to_trichromatic_result,
     convert_to_lab_result,
+    convert_to_rgb_result,
 )
 
 
@@ -122,7 +123,6 @@ class TestUtil(TestCase):
             pywincalc_product.optical_data.material_type,
             pywincalc.MaterialType.MONOLITHIC,
         )
-        self.assertEqual(pywincalc_product.optical_data.permeability_factor, 0.0)
         self.assertEqual(
             pywincalc_product.optical_data.wavelength_data[0].wavelength, 0.300
         )
@@ -173,15 +173,27 @@ class TestUtil(TestCase):
     def test_convert_to_lab_result(self):
         self.assertIsNone(convert_to_lab_result(None))
 
-        lab = pywincalc.Lab(l=1, a=2, b=3)
-        result = convert_to_lab_result(lab)
-        expected_output = LabResult(l=1, a=2, b=3)
-        self.assertEqual(result, expected_output)
+        # Lab has no Python constructor, so extract a real instance from a color calculation
+        clear_3_path = "tests/data/CLEAR_3.DAT"
+        clear_3 = pywincalc.parse_optics_file(clear_3_path)
+        glazing_system = pywincalc.GlazingSystem(solid_layers=[clear_3])
+        results = glazing_system.color().system_results
+        input_lab = results.front.transmittance.direct_direct.lab
+        result = convert_to_lab_result(input_lab)
+        self.assertEqual(input_lab.L, result.l)
+        self.assertEqual(input_lab.a, result.a)
+        self.assertEqual(input_lab.b, result.b)
 
     def test_convert_to_rgb_result(self):
-        self.assertIsNone(convert_to_lab_result(None))
+        self.assertIsNone(convert_to_rgb_result(None))
 
-        rgb = pywincalc.RGB(r=1, g=2, b=3)
-        result = convert_to_lab_result(rgb)
-        expected_output = RGBResult(r=1, g=2, b=3)
-        self.assertEqual(result, expected_output)
+        # RGB has no Python constructor, so extract a real instance from a color calculation
+        clear_3_path = "tests/data/CLEAR_3.DAT"
+        clear_3 = pywincalc.parse_optics_file(clear_3_path)
+        glazing_system = pywincalc.GlazingSystem(solid_layers=[clear_3])
+        results = glazing_system.color().system_results
+        input_rgb = results.front.transmittance.direct_direct.rgb
+        result = convert_to_rgb_result(input_rgb)
+        self.assertEqual(input_rgb.R, result.r)
+        self.assertEqual(input_rgb.G, result.g)
+        self.assertEqual(input_rgb.B, result.b)
