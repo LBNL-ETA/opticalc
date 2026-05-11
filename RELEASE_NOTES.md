@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.36
+
+- Add log message to convert_wavelength_data. Refactor method.
+
 0.0.35
 
 - Updated to test pywincalc 3.8.2
