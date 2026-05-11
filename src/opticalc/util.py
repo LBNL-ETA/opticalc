@@ -115,6 +115,7 @@ def convert_wavelength_data(
         )
 
     pywincalc_wavelength_measured_data = []
+    num_non_zero_diffuse_measurements = 0
     for individual_wavelength_measurement in raw_wavelength_data:
         # Validate and convert wavelength...
         if "w" not in individual_wavelength_measurement:
@@ -147,34 +148,27 @@ def convert_wavelength_data(
                     convert_null_or_empty_to_zero=convert_null_or_empty_to_zero,
                 )
 
-        # Build the pywincalc component
+        def component_values(keys=("tf", "tb", "rf", "rb")):
+            if combine_diffuse_and_specular:
+                return [
+                    specular_measurements.get(k, 0) + diffuse_measurements.get(k, 0)
+                    for k in keys
+                ]
+            return [specular_measurements.get(k, 0) for k in keys]
+
+        pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
+            *component_values()
+        )
+
+        # Only define a diffuse component for non-specular products.
+        # Pywincalc rejects diffuse values on specular products (even all-zero ones),
+        # because anything non-None triggers a BSDF Hemisphere requirement.
         pywincalc_diffuse_component = None
-        if combine_diffuse_and_specular:
-            pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
-                specular_measurements.get("tf", 0) + diffuse_measurements.get("tf", 0),
-                specular_measurements.get("tb", 0) + diffuse_measurements.get("tb", 0),
-                specular_measurements.get("rf", 0) + diffuse_measurements.get("rf", 0),
-                specular_measurements.get("rb", 0) + diffuse_measurements.get("rb", 0),
-            )
-        else:
-            pywincalc_direct_component = pywincalc.OpticalMeasurementComponent(
-                specular_measurements.get("tf", 0),
-                specular_measurements.get("tb", 0),
-                specular_measurements.get("rf", 0),
-                specular_measurements.get("rb", 0),
-            )
-            # Only define diffuse component if this is a non-specular component.
-            # Pywincalc can't handle diffuse values for specular components, even if they're all zeroes.
-            # If it sees anything it will require a BSDF Hemisphere to be provided,
-            # which is not used for specular products and therefore causes an error.
-            # So we skip defining diffuse component when the component is specular.
-            if not is_specular:
-                pywincalc_diffuse_component = pywincalc.OpticalMeasurementComponent(
-                    diffuse_measurements.get("tf", 0),
-                    diffuse_measurements.get("tb", 0),
-                    diffuse_measurements.get("rf", 0),
-                    diffuse_measurements.get("rb", 0),
-                )
+        if not is_specular and not combine_diffuse_and_specular:
+            dif_values = [diffuse_measurements.get(k, 0) for k in ("tf", "tb", "rf", "rb")]
+            if any(v > 0 for v in dif_values):
+                num_non_zero_diffuse_measurements += 1
+            pywincalc_diffuse_component = pywincalc.OpticalMeasurementComponent(*dif_values)
 
         try:
             wd = pywincalc.WavelengthData(
@@ -187,6 +181,11 @@ def convert_wavelength_data(
             raise Exception(
                 f"cannot convert wavelength data to pywincalc WavelengthData type: {e}"
             ) from e
+
+    if num_non_zero_diffuse_measurements > 0:
+        logger.info(
+            f"Created {num_non_zero_diffuse_measurements} non-zero diffuse OpticalMeasurementComponent instances"
+        )
 
     return pywincalc_wavelength_measured_data
 
