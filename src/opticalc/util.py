@@ -65,7 +65,7 @@ def convert_wavelength_data(
                                         Set this to True when creating wavelength data for a product that has both
                                         diffuse and specular measurements.
 
-        convert_null_or_empty_to_zero:  If True, null values will be converted to zero.
+        convert_null_or_empty_to_zero:  If True, null values for tf, tb, rf, rb will be converted to zero.
                                         Otherwise, an exception will be raised if a null value is found.
 
         is_specular:                    If True, indicates that the product is fully specular.
