@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.37
+
+- Add bsdf_hemisphere_type argument to generate_integrated_spectal_averages method.
+
 0.0.36
 
 - Add log message to convert_wavelength_data. Refactor method.

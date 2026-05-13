@@ -467,6 +467,7 @@ def generate_integrated_spectral_averages_summary(
     product: BaseProduct,
     optical_standard: pywincalc.OpticalStandard,
     use_diffuse_as_specular: bool = False,  # DEPRECATED - see note below
+    bsdf_hemisphere_type: pywincalc.BSDFBasisType | None = None,
 ) -> IntegratedSpectralAveragesSummaryValues:
     """
     Uses pywincalc to generate an integrated spectral averages summary for a given product
@@ -497,6 +498,11 @@ def generate_integrated_spectral_averages_summary(
         optical_standard:           Instance of a pywincalc OpticalStandard class.
         use_diffuse_as_specular:    If True, the diffuse measurements will be used as the specular measurements
                                     when building pywincalc WavelengthData objects.
+        bsdf_hemisphere_type:       BSDF basis type used to build the BSDFHemisphere for
+                                    non-specular (diffuse) products. Accepts
+                                    pywincalc.BSDFBasisType.QUARTER or FULL. Defaults to
+                                    QUARTER when not provided (FULL has caused memory issues
+                                    on Heroku). Ignored for specular products.
 
     Returns:
         An instance of IntegratedSpectralAveragesSummaryValues dataclass populated with results.
@@ -511,6 +517,11 @@ def generate_integrated_spectral_averages_summary(
         raise ValueError("product is None")
     if not optical_standard:
         raise ValueError("optical_standard is None")
+    if bsdf_hemisphere_type is not None and bsdf_hemisphere_type not in (
+        pywincalc.BSDFBasisType.QUARTER,
+        pywincalc.BSDFBasisType.FULL,
+    ):
+        raise ValueError(f"Invalid BSDF hemisphere type: {bsdf_hemisphere_type}")
 
     if use_diffuse_as_specular:
         logger.warning(
@@ -531,14 +542,22 @@ def generate_integrated_spectral_averages_summary(
 
     bsdf_hemisphere: pywincalc.BSDFHemisphere | None = None
     if product.physical_properties.is_specular:
-        bsdf_hemisphere = None
+        if bsdf_hemisphere_type is not None:
+            logger.warning(
+                f"A bsdf_hemisphere type of {bsdf_hemisphere_type} was provided, "
+                "but will be ignored since this is a specular product and "
+                "pywincalc does not require a BSDF hemisphere."
+            )
     else:
         # Starting in Pywincalc 3.7.2, we must include a BSDF Hemisphere
         # when creating a glazing system if there is diffuse measured values.
-        #bsdf_hemisphere = pywincalc.BSDFHemisphere.create(pywincalc.BSDFBasisType.FULL)
-        # Using SMALL for now to avoid memory issue on Heroku when using FULL.
-        bsdf_hemisphere = pywincalc.BSDFHemisphere.create(pywincalc.BSDFBasisType.QUARTER)
-        
+        if bsdf_hemisphere_type is None:
+            bsdf_hemisphere_type = pywincalc.BSDFBasisType.QUARTER
+            logger.info(
+                f"bsdf_hemisphere_type was not provided by caller. Default {bsdf_hemisphere_type} will be used."
+            )
+
+        bsdf_hemisphere = pywincalc.BSDFHemisphere.create(bsdf_hemisphere_type)
 
     glazing_system: pywincalc.GlazingSystem = pywincalc.GlazingSystem(
         optical_standard=optical_standard,
