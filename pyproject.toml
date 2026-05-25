@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opticalc"
-version = "0.0.37"
+version = "0.0.38"
 description = ""
 dependencies = [
-    "pydantic>=2.8.2",
+    "pydantic>=2.13.4",
     "py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
     "pywincalc>=3.8.2",
 ]

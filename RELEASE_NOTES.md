@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.38
+
+- Calculate emissivity for SHADE_MATERIAL if it has IR wavelengths
+
 0.0.37
 
 - Add bsdf_hemisphere_type argument to generate_integrated_spectal_averages method.

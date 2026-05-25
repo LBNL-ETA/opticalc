@@ -624,14 +624,18 @@ def generate_integrated_spectral_averages_summary(
         # doesn't have thermal IR wavelength data.
         return summary_results
 
-    # Add thermal IR results to summary_results
-    # Per meeting in late Jan 2024, we will ignore emissivity for SHADE_MATERIAL subtype products.
-    # We only want to refer to header value emissivity for products of this subtype.
+    # May 26, 2026
+    # We used to ignore emissivity for SHADE_MATERIAL products
+    # regardless of whether it had IR wavelengths or not.
+    # But now we treat like other subtypes and calc emissivity if
+    # it has IR wavelengths.
+
     logger.info("Calculating thermal IR results")
-    ignore_emissivity = product.subtype == ProductSubtype.SHADE_MATERIAL.name
     try:
         summary_results.thermal_ir = calc_thermal_ir_results(
-            optical_standard, pywincalc_layer, ignore_emissivity=ignore_emissivity
+            optical_standard,
+            pywincalc_layer,
+            ignore_emissivity=False,
         )
     except Exception as e:
         error_msg = (
