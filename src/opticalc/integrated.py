@@ -621,7 +621,7 @@ def generate_integrated_spectral_averages_summary(
 
     if not product.has_thermal_ir_wavelengths:
         # Don't run thermal IR calculations if the product
-        # doesn't have thermal IR wavelength data.
+        # doesn't have thermal IR wavelength data >= 25 microns
         return summary_results
 
     # May 26, 2026

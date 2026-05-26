@@ -69,7 +69,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "py-igsdb-base-data", git = "https://github.com/LBNL-ETA/py_igsdb_base_data?branch=main" },
+    { name = "py-igsdb-base-data", git = "https://github.com/LBNL-ETA/py_igsdb_base_data?rev=main" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "pywincalc", specifier = ">=3.8.2", index = "https://test.pypi.org/simple/" },
 ]
@@ -86,7 +86,7 @@ wheels = [
 [[package]]
 name = "py-igsdb-base-data"
 version = "0.0.73"
-source = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data?branch=main#ed943de0bcd2a6c5b5112c4a0bace16cc2ef6538" }
+source = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data?rev=main#ed943de0bcd2a6c5b5112c4a0bace16cc2ef6538" }
 dependencies = [
     { name = "dataclasses-json" },
 ]
