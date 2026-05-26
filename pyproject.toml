@@ -13,7 +13,7 @@ requires-python = ">=3.10"
 #   pip install . --extra-index-url https://test.pypi.org/simple/
 dependencies = [
     "pydantic>=2.13.4",
-    "py_igsdb_base_data",
+    "py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
     "pywincalc>=3.8.2",
 ]
 
@@ -30,7 +30,6 @@ explicit = true
 
 [tool.uv.sources]
 pywincalc = { index = "testpypi" }
-py_igsdb_base_data = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data", branch = "main" }
 
 [tool.pytest.ini_options]
 minversion = "6.0"

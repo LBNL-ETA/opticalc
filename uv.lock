@@ -59,7 +59,7 @@ wheels = [
 
 [[package]]
 name = "opticalc"
-version = "0.0.38"
+version = "0.0.39"
 source = { editable = "." }
 dependencies = [
     { name = "py-igsdb-base-data" },
