@@ -420,8 +420,7 @@ def calc_thermal_ir_results(
     Args:
         optical_standard:       Instance of a pywincalc OpticalStandard class.
         pywincalc_layer:        Instance of a pywincalc ProductDataOpticalAndThermal class.
-        ignore_emissivity:      There are times we don't want to store the generated emissivity, for example
-                                when calculating summary values for SHADE_MATERIAL subtype products.
+        ignore_emissivity:      There are times we don't want to store the generated emissivity.
 
     Returns:
         An instance of ThermalIRResults dataclass populated with results.

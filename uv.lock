@@ -86,7 +86,7 @@ wheels = [
 [[package]]
 name = "py-igsdb-base-data"
 version = "0.0.73"
-source = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data?rev=main#ed943de0bcd2a6c5b5112c4a0bace16cc2ef6538" }
+source = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data?rev=main#c005a21ef2e835ef2eac55edcba41f49ff482070" }
 dependencies = [
     { name = "dataclasses-json" },
 ]
