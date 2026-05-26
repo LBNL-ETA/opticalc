@@ -27,6 +27,12 @@ pybind11/
 
 # ignore python
 *.pyc
+__pycache__/
+*.egg-info/
+*.egg
+.venv/
+.pytest_cache/
+dist/
 
 # build folder, if the dev chooses to put it there
 #  could also do a wildcard for build-* if we suggest that naming approach
