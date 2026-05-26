@@ -4,11 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opticalc"
-version = "0.0.38"
+version = "0.0.39"
 description = ""
+requires-python = ">=3.10"
+# Note: `pywincalc` is published on TestPyPI, not PyPI. The TestPyPI index is
+# declared in [[tool.uv.index]] below and bound to `pywincalc` via
+# [tool.uv.sources]. For plain pip installs, pass:
+#   pip install . --extra-index-url https://test.pypi.org/simple/
 dependencies = [
     "pydantic>=2.13.4",
-    "py_igsdb_base_data @ git+https://github.com/LBNL-ETA/py_igsdb_base_data@main",
+    "py_igsdb_base_data",
     "pywincalc>=3.8.2",
 ]
 
@@ -17,6 +22,15 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+explicit = true
+
+[tool.uv.sources]
+pywincalc = { index = "testpypi" }
+py_igsdb_base_data = { git = "https://github.com/LBNL-ETA/py_igsdb_base_data", branch = "main" }
 
 [tool.pytest.ini_options]
 minversion = "6.0"

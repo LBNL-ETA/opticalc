@@ -1,5 +1,9 @@
 # Release Notes
 
+0.0.39
+
+- Remove vendored py_igsdb_base_data
+
 0.0.38
 
 - Calculate emissivity for SHADE_MATERIAL if it has IR wavelengths
